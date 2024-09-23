@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "307869738798",
+    "project_id": "medfinder-1a729",
+    "storage_bucket": "medfinder-1a729.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:307869738798:android:39898638c14b9d45123cbf",
+        "android_client_info": {
+          "package_name": "com.blinkfrosty.medfinder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCL0l8zy38-R4XMyH6vpPHB_iEqe0JQ_NA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
