@@ -9,4 +9,10 @@
 
     <string name="menu_search_by_department">Search By Department</string>
     <string name="menu_search_by_doctor">Search By Doctor</string>
+    <string name="menu_logout">Logout</string>
+
+    <string name="dialog_logout_confirmation">Are you sure you want to logout?</string>
+
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">No</string>
 </resources>
