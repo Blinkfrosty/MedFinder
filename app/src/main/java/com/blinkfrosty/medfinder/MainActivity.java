@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
@@ -32,11 +34,25 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(binding.appBarMain.toolbar);
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
+        setupDrawerMenu(drawer, navigationView, binding);
+        setupViewProfileMenu(navigationView, binding);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
+
+    // Setup the drawer menu navigation and handle the logout action
+    private void setupDrawerMenu(DrawerLayout drawer, NavigationView navigationView, ActivityMainBinding binding) {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_search_by_department,
-                R.id.nav_search_by_doctor)
+                R.id.nav_search_by_doctor,
+                R.id.nav_logout)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -59,13 +75,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
-    }
-
+    // Show logout dialog
     private void showLogoutDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_logout_confirmation, null);
@@ -83,5 +93,24 @@ public class MainActivity extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    // Setup the profile image view to show a popup menu with the option to view the user profile
+    private void setupViewProfileMenu(NavigationView navigationView, ActivityMainBinding binding) {
+        ImageView profileImageView = navigationView.getHeaderView(0).findViewById(R.id.header_profile_photo);
+        profileImageView.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(MainActivity.this, v);
+            popupMenu.getMenuInflater().inflate(R.menu.profile_menu, popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.menu_view_profile) {
+                    NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_content_main);
+                    navController.navigate(R.id.nav_user_profile);
+                    binding.drawerLayout.closeDrawer(GravityCompat.START);
+                    return true;
+                }
+                return false;
+            });
+            popupMenu.show();
+        });
     }
 }
