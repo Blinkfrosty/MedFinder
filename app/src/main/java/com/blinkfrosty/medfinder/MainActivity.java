@@ -73,10 +73,10 @@ public class MainActivity extends AppCompatActivity {
 
         AlertDialog dialog = builder.create();
 
-        Button buttonNo = dialogView.findViewById(R.id.button_no);
+        Button buttonNo = dialogView.findViewById(R.id.logout_dialog_button_no);
         buttonNo.setOnClickListener(v -> dialog.dismiss());
 
-        Button buttonYes = dialogView.findViewById(R.id.button_yes);
+        Button buttonYes = dialogView.findViewById(R.id.logout_dialog_button_yes);
         buttonYes.setOnClickListener(v -> {
             // TODO: Implement logout and remove this toast message
             Toast.makeText(MainActivity.this, "Logout not implemented yet", Toast.LENGTH_SHORT).show();

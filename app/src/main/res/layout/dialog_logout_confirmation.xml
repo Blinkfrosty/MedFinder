@@ -6,7 +6,7 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/text_logout_confirmation"
+        android:id="@+id/logout_dialog_text_confirmation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/dialog_logout_confirmation"
@@ -16,21 +16,21 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/button_yes"
+        android:id="@+id/logout_dialog_button_yes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/dialog_yes"
-        app:layout_constraintTop_toBottomOf="@id/text_logout_confirmation"
+        app:layout_constraintTop_toBottomOf="@id/logout_dialog_text_confirmation"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="16dp"
         android:layout_marginStart="40dp" />
 
     <Button
-        android:id="@+id/button_no"
+        android:id="@+id/logout_dialog_button_no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/dialog_no"
-        app:layout_constraintTop_toBottomOf="@id/text_logout_confirmation"
+        app:layout_constraintTop_toBottomOf="@id/logout_dialog_text_confirmation"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="40dp" />
