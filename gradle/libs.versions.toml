@@ -1,6 +1,7 @@
 [versions]
 agp = "8.6.1"
 firebaseBom = "33.3.0"
+playServicesAuth = "21.2.0"
 googleServices = "4.4.2"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -18,6 +19,7 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }
 firebase-database = { module = "com.google.firebase:firebase-database" }
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
