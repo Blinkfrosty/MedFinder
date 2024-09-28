@@ -1,14 +1,13 @@
 package com.blinkfrosty.medfinder;
 
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
-import com.blinkfrosty.medfinder.ui.signin.SignInActivity;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.core.view.GravityCompat;
@@ -20,7 +19,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.blinkfrosty.medfinder.databinding.ActivityMainBinding;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -86,18 +84,12 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
 
         Button buttonNo = dialogView.findViewById(R.id.logout_dialog_button_no);
-        // Dismiss the dialog when the user clicks the "No" button
         buttonNo.setOnClickListener(v -> dialog.dismiss());
 
         Button buttonYes = dialogView.findViewById(R.id.logout_dialog_button_yes);
-        // Sign out the user when the user clicks the "Yes" button
         buttonYes.setOnClickListener(v -> {
-            // Sign out the user and redirect to the sign in activity
-            FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(MainActivity.this, SignInActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
+            // TODO: Implement logout and remove this toast message
+            Toast.makeText(MainActivity.this, "Logout not implemented yet", Toast.LENGTH_SHORT).show();
         });
 
         dialog.show();

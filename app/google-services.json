@@ -12,20 +12,7 @@
           "package_name": "com.blinkfrosty.medfinder"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "307869738798-5rev2k7h61r449acju39gj2vd36p22p9.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.blinkfrosty.medfinder",
-            "certificate_hash": "86355b6591fee590fe346a51945083e165106e44"
-          }
-        },
-        {
-          "client_id": "307869738798-odk3nmsl6mgvkdpa9263osn8o95ft30m.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyCL0l8zy38-R4XMyH6vpPHB_iEqe0JQ_NA"
@@ -33,12 +20,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "307869738798-odk3nmsl6mgvkdpa9263osn8o95ft30m.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
