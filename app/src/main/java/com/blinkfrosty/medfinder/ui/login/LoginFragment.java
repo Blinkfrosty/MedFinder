@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.blinkfrosty.medfinder.MainActivity;
 import com.blinkfrosty.medfinder.R;
+import com.blinkfrosty.medfinder.SignInActivity;
 import com.blinkfrosty.medfinder.helpers.ProgressDialogHelper;
 import com.blinkfrosty.medfinder.helpers.SharedPreferenceHelper;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -53,9 +54,9 @@ public class LoginFragment extends Fragment {
 
         view.findViewById(R.id.login_button).setOnClickListener(v -> loginUser());
         view.findViewById(R.id.google_sign_in_button).setOnClickListener(v -> signInWithGoogle());
-        // TODO: Implement the forgot password and create account functionality
-//        view.findViewById(R.id.forgot_password).setOnClickListener(v -> ((SignInActivity) getActivity()).loadFragment(new ResetPasswordFragment()));
-//        view.findViewById(R.id.create_account).setOnClickListener(v -> ((SignInActivity) getActivity()).loadFragment(new SignUpFragment()));
+        view.findViewById(R.id.forgot_password).setOnClickListener(v -> ((SignInActivity) requireActivity()).loadFragment(new ResetPasswordFragment()));
+        // TODO: Implement create account functionality
+//        view.findViewById(R.id.create_account).setOnClickListener(v -> ((SignInActivity) requireActivity()).loadFragment(new SignUpFragment()));
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))

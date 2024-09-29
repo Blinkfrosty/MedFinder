@@ -20,10 +20,14 @@
     <string name="progress_dialog_placeholder_text">Loading...</string>
     <string name="logging_in_progress_text">Logging in...</string>
     <string name="logging_out_progress_text">Logging out...</string>
-    <string name="login_text">LOGIN</string>
-    <string name="email_text">Email</string>
-    <string name="password_text">Password</string>
+    <string name="login_title">LOGIN</string>
+    <string name="login_text">Login</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
     <string name="remember_me_text">Remember Me</string>
     <string name="forgot_password_text">Forgot Password</string>
     <string name="create_an_account_text">Create an account</string>
+    <string name="reset_password_text">Reset Password</string>
+    <string name="reset_email_sent">Password reset email sent! Check your inbox</string>
+    <string name="reset_email_failed">Failed to send password reset email</string>
 </resources>
