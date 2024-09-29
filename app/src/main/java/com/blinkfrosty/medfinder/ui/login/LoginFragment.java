@@ -1,9 +1,12 @@
 package com.blinkfrosty.medfinder.ui.login;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -52,6 +55,7 @@ public class LoginFragment extends Fragment {
         progressDialogHelper = new ProgressDialogHelper();
         preferenceHelper = new SharedPreferenceHelper(requireContext());
 
+        setPasswordVisibilityToggle();
         view.findViewById(R.id.login_button).setOnClickListener(v -> loginUser());
         view.findViewById(R.id.google_sign_in_button).setOnClickListener(v -> signInWithGoogle());
         view.findViewById(R.id.forgot_password).setOnClickListener(v -> ((SignInActivity) requireActivity()).loadFragment(new ResetPasswordFragment()));
@@ -135,5 +139,26 @@ public class LoginFragment extends Fragment {
                         Toast.makeText(getActivity(), R.string.authentication_failed, Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void setPasswordVisibilityToggle() {
+        passwordEditText.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                int drawableEnd = 2; // Right drawable
+                if (event.getRawX() >= (passwordEditText.getRight() - passwordEditText.getCompoundDrawables()[drawableEnd].getBounds().width())) {
+                    if (passwordEditText.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
+                        passwordEditText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                        passwordEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_on, 0);
+                    } else {
+                        passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        passwordEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_off, 0);
+                    }
+                    passwordEditText.setSelection(passwordEditText.getText().length());
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 }
