@@ -10,6 +10,9 @@ import android.widget.PopupMenu;
 
 import com.blinkfrosty.medfinder.helpers.ProgressDialogHelper;
 import com.blinkfrosty.medfinder.helpers.SharedPreferenceHelper;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.core.view.GravityCompat;
@@ -95,11 +98,19 @@ public class MainActivity extends AppCompatActivity {
             dialog.dismiss();
             ProgressDialogHelper progressDialogHelper = new ProgressDialogHelper();
             progressDialogHelper.showProgressDialog(MainActivity.this, getString(R.string.logging_out_progress_text));
+
+            // Sign out from Firebase
             FirebaseAuth.getInstance().signOut();
-            preferenceHelper.setLoggedIn(false);
-            startActivity(new Intent(MainActivity.this, SignInActivity.class));
-            finish();
-            progressDialogHelper.dismissProgressDialog();
+
+            // Sign out from Google
+            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this,
+                    new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build());
+            googleSignInClient.signOut().addOnCompleteListener(task -> {
+                preferenceHelper.setLoggedIn(false);
+                startActivity(new Intent(MainActivity.this, SignInActivity.class));
+                finish();
+                progressDialogHelper.dismissProgressDialog();
+            });
         });
 
         dialog.show();
