@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.blinkfrosty.medfinder.MainActivity;
 import com.blinkfrosty.medfinder.R;
 import com.blinkfrosty.medfinder.helpers.ProgressDialogHelper;
+import com.blinkfrosty.medfinder.helpers.SharedPreferenceHelper;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -36,6 +37,7 @@ public class LoginFragment extends Fragment {
     private EditText emailEditText, passwordEditText;
     private CheckBox rememberMeCheckBox;
     private ProgressDialogHelper progressDialogHelper;
+    private SharedPreferenceHelper preferenceHelper;
 
     @Nullable
     @Override
@@ -47,6 +49,7 @@ public class LoginFragment extends Fragment {
         passwordEditText = view.findViewById(R.id.password);
         rememberMeCheckBox = view.findViewById(R.id.remember_me);
         progressDialogHelper = new ProgressDialogHelper();
+        preferenceHelper = new SharedPreferenceHelper(requireContext());
 
         view.findViewById(R.id.login_button).setOnClickListener(v -> loginUser());
         view.findViewById(R.id.google_sign_in_button).setOnClickListener(v -> signInWithGoogle());
@@ -77,7 +80,7 @@ public class LoginFragment extends Fragment {
             return;
         }
 
-        progressDialogHelper.showProgressDialog(getActivity(), String.valueOf(R.string.signing_in_progress_text));
+        progressDialogHelper.showProgressDialog(getActivity(), getString(R.string.logging_in_progress_text));
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
@@ -85,7 +88,7 @@ public class LoginFragment extends Fragment {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (rememberMeCheckBox.isChecked()) {
-                            // TODO: Implement session persistence
+                            preferenceHelper.setLoggedIn(true);
                         }
                         startActivity(new Intent(getActivity(), MainActivity.class));
                         requireActivity().finish();
@@ -116,13 +119,15 @@ public class LoginFragment extends Fragment {
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        progressDialogHelper.showProgressDialog(getActivity(), getString(R.string.signing_in_progress_text));
+        progressDialogHelper.showProgressDialog(getActivity(), getString(R.string.logging_in_progress_text));
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(requireActivity(), task -> {
                     progressDialogHelper.dismissProgressDialog();
                     if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (rememberMeCheckBox.isChecked()) {
+                            preferenceHelper.setLoggedIn(true);
+                        }
                         startActivity(new Intent(getActivity(), MainActivity.class));
                         requireActivity().finish();
                     } else {

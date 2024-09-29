@@ -18,7 +18,8 @@
     <string name="password_required">Password is required</string>
     <string name="email_required">Email is required</string>
     <string name="progress_dialog_placeholder_text">Loading...</string>
-    <string name="signing_in_progress_text">Signing in...</string>
+    <string name="logging_in_progress_text">Logging in...</string>
+    <string name="logging_out_progress_text">Logging out...</string>
     <string name="login_text">LOGIN</string>
     <string name="email_text">Email</string>
     <string name="password_text">Password</string>
