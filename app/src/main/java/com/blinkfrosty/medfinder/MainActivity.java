@@ -7,8 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 
+import com.blinkfrosty.medfinder.helpers.ProgressDialogHelper;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.core.view.GravityCompat;
@@ -90,9 +90,13 @@ public class MainActivity extends AppCompatActivity {
 
         Button buttonYes = dialogView.findViewById(R.id.logout_dialog_button_yes);
         buttonYes.setOnClickListener(v -> {
+            dialog.dismiss();
+            ProgressDialogHelper progressDialogHelper = new ProgressDialogHelper();
+            progressDialogHelper.showProgressDialog(MainActivity.this, "Logging out...");
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(MainActivity.this, SignInActivity.class));
             finish();
+            progressDialogHelper.dismissProgressDialog();
         });
 
         dialog.show();

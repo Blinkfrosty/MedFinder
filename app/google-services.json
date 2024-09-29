@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "307869738798-5rev2k7h61r449acju39gj2vd36p22p9.apps.googleusercontent.com",
+          "client_id": "307869738798-r5ikkv00cc8cm2f8jbon2laedh72u2il.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.blinkfrosty.medfinder",
-            "certificate_hash": "86355b6591fee590fe346a51945083e165106e44"
+            "certificate_hash": "b6c099bdcddcc56294790d5554288ffad1de9f65"
           }
         },
         {

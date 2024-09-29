@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,19 +16,17 @@ import androidx.fragment.app.Fragment;
 
 import com.blinkfrosty.medfinder.MainActivity;
 import com.blinkfrosty.medfinder.R;
+import com.blinkfrosty.medfinder.helpers.ProgressDialogHelper;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-
-import java.util.Objects;
 
 public class LoginFragment extends Fragment {
 
@@ -39,7 +35,7 @@ public class LoginFragment extends Fragment {
     private GoogleSignInClient mGoogleSignInClient;
     private EditText emailEditText, passwordEditText;
     private CheckBox rememberMeCheckBox;
-    private ProgressBar progressBar;
+    private ProgressDialogHelper progressDialogHelper;
 
     @Nullable
     @Override
@@ -50,7 +46,7 @@ public class LoginFragment extends Fragment {
         emailEditText = view.findViewById(R.id.email);
         passwordEditText = view.findViewById(R.id.password);
         rememberMeCheckBox = view.findViewById(R.id.remember_me);
-        progressBar = view.findViewById(R.id.progress_bar);
+        progressDialogHelper = new ProgressDialogHelper();
 
         view.findViewById(R.id.login_button).setOnClickListener(v -> loginUser());
         view.findViewById(R.id.google_sign_in_button).setOnClickListener(v -> signInWithGoogle());
@@ -72,20 +68,20 @@ public class LoginFragment extends Fragment {
         String password = passwordEditText.getText().toString().trim();
 
         if (TextUtils.isEmpty(email)) {
-            emailEditText.setError("Email is required.");
+            emailEditText.setError(getString(R.string.email_required));
             return;
         }
 
         if (TextUtils.isEmpty(password)) {
-            passwordEditText.setError("Password is required.");
+            passwordEditText.setError(getString(R.string.password_required));
             return;
         }
 
-        progressBar.setVisibility(View.VISIBLE);
+        progressDialogHelper.showProgressDialog(getActivity(), String.valueOf(R.string.signing_in_progress_text));
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
-                    progressBar.setVisibility(View.GONE);
+                    progressDialogHelper.dismissProgressDialog();
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (rememberMeCheckBox.isChecked()) {
@@ -94,12 +90,11 @@ public class LoginFragment extends Fragment {
                         startActivity(new Intent(getActivity(), MainActivity.class));
                         requireActivity().finish();
                     } else {
-                        Toast.makeText(getActivity(), "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.authentication_failed, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    // TODO: Fix deprecated stuff
     private void signInWithGoogle() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -115,23 +110,23 @@ public class LoginFragment extends Fragment {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
-                Toast.makeText(getActivity(), "Google sign in failed.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.google_sign_in_failed, Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        progressBar.setVisibility(View.VISIBLE);
+        progressDialogHelper.showProgressDialog(getActivity(), getString(R.string.signing_in_progress_text));
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(requireActivity(), task -> {
-                    progressBar.setVisibility(View.GONE);
+                    progressDialogHelper.dismissProgressDialog();
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         startActivity(new Intent(getActivity(), MainActivity.class));
                         requireActivity().finish();
                     } else {
-                        Toast.makeText(getActivity(), "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.authentication_failed, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
