@@ -16,10 +16,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.blinkfrosty.medfinder.MainActivity;
 import com.blinkfrosty.medfinder.R;
-import com.blinkfrosty.medfinder.SignInActivity;
 import com.blinkfrosty.medfinder.helpers.ProgressDialogHelper;
 import com.blinkfrosty.medfinder.helpers.SharedPreferenceHelper;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -30,7 +30,6 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginFragment extends Fragment {
@@ -58,7 +57,9 @@ public class LoginFragment extends Fragment {
         setPasswordVisibilityToggle();
         view.findViewById(R.id.login_button).setOnClickListener(v -> loginUser());
         view.findViewById(R.id.google_sign_in_button).setOnClickListener(v -> signInWithGoogle());
-        view.findViewById(R.id.forgot_password).setOnClickListener(v -> ((SignInActivity) requireActivity()).loadFragment(new ResetPasswordFragment()));
+        view.findViewById(R.id.forgot_password).setOnClickListener(v ->
+                Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_resetPasswordFragment)
+        );
         // TODO: Implement create account functionality
 //        view.findViewById(R.id.create_account).setOnClickListener(v -> ((SignInActivity) requireActivity()).loadFragment(new SignUpFragment()));
 
@@ -91,7 +92,6 @@ public class LoginFragment extends Fragment {
                 .addOnCompleteListener(task -> {
                     progressDialogHelper.dismissProgressDialog();
                     if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
                         if (rememberMeCheckBox.isChecked()) {
                             preferenceHelper.setLoggedIn(true);
                         }

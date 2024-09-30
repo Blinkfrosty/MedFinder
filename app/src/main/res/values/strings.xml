@@ -17,9 +17,9 @@
     <string name="google_sign_in_failed">Google sign in failed</string>
     <string name="password_required">Password is required</string>
     <string name="email_required">Email is required</string>
-    <string name="progress_dialog_placeholder_text">Loading...</string>
-    <string name="logging_in_progress_text">Logging in...</string>
-    <string name="logging_out_progress_text">Logging out...</string>
+    <string name="progress_dialog_placeholder_text">Loading…</string>
+    <string name="logging_in_progress_text">Logging in…</string>
+    <string name="logging_out_progress_text">Logging out…</string>
     <string name="login_title">LOGIN</string>
     <string name="login_text">Login</string>
     <string name="email_hint">Email</string>
