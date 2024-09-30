@@ -58,10 +58,11 @@ public class LoginFragment extends Fragment {
         view.findViewById(R.id.login_button).setOnClickListener(v -> loginUser());
         view.findViewById(R.id.google_sign_in_button).setOnClickListener(v -> signInWithGoogle());
         view.findViewById(R.id.forgot_password).setOnClickListener(v ->
-                Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_resetPasswordFragment)
+                Navigation.findNavController(v).navigate(R.id.action_login_to_reset_password)
         );
-        // TODO: Implement create account functionality
-//        view.findViewById(R.id.create_account).setOnClickListener(v -> ((SignInActivity) requireActivity()).loadFragment(new SignUpFragment()));
+        view.findViewById(R.id.create_account).setOnClickListener(v ->
+                Navigation.findNavController(v).navigate(R.id.action_login_to_sign_up)
+        );
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -76,15 +77,7 @@ public class LoginFragment extends Fragment {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
 
-        if (TextUtils.isEmpty(email)) {
-            emailEditText.setError(getString(R.string.email_required));
-            return;
-        }
-
-        if (TextUtils.isEmpty(password)) {
-            passwordEditText.setError(getString(R.string.password_required));
-            return;
-        }
+        if (!validateInput(email, password)) return;
 
         progressDialogHelper.showProgressDialog(getActivity(), getString(R.string.logging_in_progress_text));
 
@@ -101,6 +94,19 @@ public class LoginFragment extends Fragment {
                         Toast.makeText(getActivity(), R.string.authentication_failed, Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private boolean validateInput(String email, String password) {
+        boolean isValid = true;
+        if (TextUtils.isEmpty(email)) {
+            emailEditText.setError(getString(R.string.email_required));
+            isValid = false;
+        }
+        if (TextUtils.isEmpty(password)) {
+            passwordEditText.setError(getString(R.string.password_required));
+            isValid = false;
+        }
+        return isValid;
     }
 
     private void signInWithGoogle() {

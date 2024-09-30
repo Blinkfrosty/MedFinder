@@ -30,4 +30,14 @@
     <string name="reset_password_text">Reset Password</string>
     <string name="reset_email_sent">Password reset email sent! Check your inbox</string>
     <string name="reset_email_failed">Failed to send password reset email</string>
+    <string name="sign_up_title">SIGN UP</string>
+    <string name="first_name_hint">First Name</string>
+    <string name="last_name_hint">Last Name</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="phone_number_hint">Phone Number</string>
+    <string name="select_gender_prompt">Select Gender</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+    <string name="gender_other">Other</string>
+    <string name="sign_up_text">Sign Up</string>
 </resources>
