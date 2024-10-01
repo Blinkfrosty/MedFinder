@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">MedFinder</string>
+    <string name="firebase_database_url">https://medfinder-1a729-default-rtdb.asia-southeast1.firebasedatabase.app</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_user_full_name">User Full Name</string>
@@ -20,6 +21,7 @@
     <string name="progress_dialog_placeholder_text">Loading…</string>
     <string name="logging_in_progress_text">Logging in…</string>
     <string name="logging_out_progress_text">Logging out…</string>
+    <string name="signing_up_progress_text">Signing up…</string>
     <string name="login_title">LOGIN</string>
     <string name="login_text">Login</string>
     <string name="email_hint">Email</string>
@@ -40,4 +42,10 @@
     <string name="gender_female">Female</string>
     <string name="gender_other">Other</string>
     <string name="sign_up_text">Sign Up</string>
+    <string name="first_name_required">First Name is required</string>
+    <string name="last_name_required">Last Name is required</string>
+    <string name="confirm_password_required">Confrim Password is required</string>
+    <string name="confirm_password_does_not_match">Passwords do not match</string>
+    <string name="gender_required">Gender is required</string>
+    <string name="account_created_successfully">Account Created Successfully</string>
 </resources>
