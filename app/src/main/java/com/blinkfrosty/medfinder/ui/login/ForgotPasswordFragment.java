@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.blinkfrosty.medfinder.R;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class ResetPasswordFragment extends Fragment {
+public class ForgotPasswordFragment extends Fragment {
 
     private EditText emailEditText;
     private FirebaseAuth mAuth;
@@ -24,7 +24,7 @@ public class ResetPasswordFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_reset_password, container, false);
+        View view = inflater.inflate(R.layout.fragment_forgot_password, container, false);
 
         emailEditText = view.findViewById(R.id.email);
         Button resetPasswordButton = view.findViewById(R.id.reset_password_button);

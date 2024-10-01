@@ -3,8 +3,9 @@ package com.blinkfrosty.medfinder.ui.login;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -153,11 +154,11 @@ public class LoginFragment extends Fragment {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 int drawableEnd = 2; // Right drawable
                 if (event.getRawX() >= (passwordEditText.getRight() - passwordEditText.getCompoundDrawables()[drawableEnd].getBounds().width())) {
-                    if (passwordEditText.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
-                        passwordEditText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    if (passwordEditText.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())){
+                        passwordEditText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                         passwordEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_on, 0);
                     } else {
-                        passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        passwordEditText.setTransformationMethod(PasswordTransformationMethod.getInstance());
                         passwordEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_off, 0);
                     }
                     passwordEditText.setSelection(passwordEditText.getText().length());

@@ -12,17 +12,17 @@
         tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_login_to_reset_password"
-            app:destination="@id/nav_reset_password" />
+            app:destination="@id/nav_forgot_password" />
         <action
             android:id="@+id/action_login_to_sign_up"
             app:destination="@id/nav_sign_up" />
     </fragment>
 
     <fragment
-        android:id="@+id/nav_reset_password"
-        android:name="com.blinkfrosty.medfinder.ui.login.ResetPasswordFragment"
-        android:label="@string/reset_password_text"
-        tools:layout="@layout/fragment_reset_password" />
+        android:id="@+id/nav_forgot_password"
+        android:name="com.blinkfrosty.medfinder.ui.login.ForgotPasswordFragment"
+        android:label="@string/forgot_password_text"
+        tools:layout="@layout/fragment_forgot_password" />
 
     <fragment
         android:id="@+id/nav_sign_up"
