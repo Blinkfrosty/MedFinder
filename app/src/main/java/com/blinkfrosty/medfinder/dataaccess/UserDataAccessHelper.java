@@ -27,8 +27,27 @@ public class UserDataAccessHelper extends DatabaseHelperBase{
         Log.d("UserDataAccessHelper", "User set. User ID: " + userId);
     }
 
-    public void getUser(String userId, UserCallback callback) {
+    public void getUserOnce(String userId, UserCallback callback) {
         usersReference.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if (user != null) {
+                    callback.onUserRetrieved(user);
+                } else {
+                    callback.onError(new Exception("User not found"));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.onError(databaseError.toException());
+            }
+        });
+    }
+
+    public void addUserDataChangeListener(String userId, UserCallback callback) {
+        usersReference.child(userId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);

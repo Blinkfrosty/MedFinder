@@ -3,13 +3,20 @@ package com.blinkfrosty.medfinder;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
+import com.blinkfrosty.medfinder.dataaccess.PhotoStorageHelper;
+import com.blinkfrosty.medfinder.dataaccess.UserCallback;
+import com.blinkfrosty.medfinder.dataaccess.UserDataAccessHelper;
+import com.blinkfrosty.medfinder.dataaccess.datastructure.User;
 import com.blinkfrosty.medfinder.helpers.ProgressDialogHelper;
 import com.blinkfrosty.medfinder.helpers.SharedPreferenceHelper;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -25,10 +32,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.blinkfrosty.medfinder.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    private TextView headerFullName;
+    private TextView headerEmail;
+    private ImageView headerProfilePhoto;
+    private UserDataAccessHelper userDataAccessHelper;
+    private PhotoStorageHelper photoStorageHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +55,22 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = binding.navView;
         setupDrawerMenu(drawer, navigationView, binding);
         setupViewProfileMenu(navigationView, binding);
+
+        // Initialize nav header views and helpers
+        headerFullName = navigationView.getHeaderView(0).findViewById(R.id.header_full_name);
+        headerEmail = navigationView.getHeaderView(0).findViewById(R.id.header_email);
+        headerProfilePhoto = navigationView.getHeaderView(0).findViewById(R.id.header_profile_photo);
+
+        // Initialize helpers
+        userDataAccessHelper = new UserDataAccessHelper(this);
+        photoStorageHelper = new PhotoStorageHelper(this);
+
+        // Update views with user data listener
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            addUserDataChangeListener(userId);
+        }
     }
 
     @Override
@@ -132,6 +161,31 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             });
             popupMenu.show();
+        });
+    }
+
+    private void addUserDataChangeListener(String userId) {
+        userDataAccessHelper.addUserDataChangeListener(userId, new UserCallback() {
+            @Override
+            public void onUserRetrieved(User user) {
+                // Update UI with user data
+                headerFullName.setText(user.getFirstName() + " " + user.getLastName());
+                headerEmail.setText(user.getEmail());
+
+                // Load profile photo
+                if (user.getProfilePictureUri() != null && !user.getProfilePictureUri().isEmpty()) {
+                    Glide.with(MainActivity.this)
+                            .load(user.getProfilePictureUri())
+                            .into(headerProfilePhoto);
+                } else {
+                    headerProfilePhoto.setImageResource(R.mipmap.ic_generic_profile_img);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("MainActivity", "Failed to retrieve user data", e);
+            }
         });
     }
 }

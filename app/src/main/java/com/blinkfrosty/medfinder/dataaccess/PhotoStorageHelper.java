@@ -4,9 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -38,12 +36,6 @@ public class PhotoStorageHelper {
         userPhotoRef.putFile(fileUri)
                 .addOnSuccessListener(taskSnapshot -> userPhotoRef.getDownloadUrl().addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener))
                 .addOnFailureListener(onFailureListener);
-    }
-
-    public void loadImageIntoImageView(String photoUrl, ImageView imageView) {
-        Glide.with(context)
-                .load(photoUrl)
-                .into(imageView);
     }
 
     private static class DownloadAndUploadTask extends AsyncTask<Void, Void, Uri> {
