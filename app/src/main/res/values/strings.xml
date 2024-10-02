@@ -1,19 +1,51 @@
 <resources>
     <string name="app_name">MedFinder</string>
+    <string name="firebase_database_url">https://medfinder-1a729-default-rtdb.asia-southeast1.firebasedatabase.app</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_user_full_name">User Full Name</string>
     <string name="nav_user_email">user@email.com</string>
     <string name="nav_profile_photo">Profile Photo</string>
     <string name="action_settings">Settings</string>
-
     <string name="menu_search_by_department">Search By Department</string>
     <string name="menu_search_by_doctor">Search By Doctor</string>
     <string name="menu_logout">Logout</string>
     <string name="menu_view_profile">View Profile</string>
-
     <string name="dialog_logout_confirmation">Are you sure you want to logout?</string>
-
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
+    <string name="authentication_failed">Authentication failed</string>
+    <string name="google_sign_in_failed">Google sign in failed</string>
+    <string name="password_required">Password is required</string>
+    <string name="email_required">Email is required</string>
+    <string name="progress_dialog_placeholder_text">Loading…</string>
+    <string name="logging_in_progress_text">Logging in…</string>
+    <string name="logging_out_progress_text">Logging out…</string>
+    <string name="signing_up_progress_text">Signing up…</string>
+    <string name="login_title">LOGIN</string>
+    <string name="login_text">Login</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="remember_me_text">Remember Me</string>
+    <string name="forgot_password_text">Forgot Password</string>
+    <string name="create_an_account_text">Create an account</string>
+    <string name="reset_password_text">Reset Password</string>
+    <string name="reset_email_sent">Password reset email sent! Check your inbox</string>
+    <string name="reset_email_failed">Failed to send password reset email</string>
+    <string name="sign_up_title">Create an Account</string>
+    <string name="first_name_hint">First Name</string>
+    <string name="last_name_hint">Last Name</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="phone_number_hint">Phone Number</string>
+    <string name="select_gender_prompt">Select Gender</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+    <string name="gender_other">Other</string>
+    <string name="sign_up_text">Sign Up</string>
+    <string name="first_name_required">First Name is required</string>
+    <string name="last_name_required">Last Name is required</string>
+    <string name="confirm_password_required">Confirm Password is required</string>
+    <string name="confirm_password_does_not_match">Passwords do not match</string>
+    <string name="gender_required">Gender is required</string>
+    <string name="account_created_successfully">Account Created Successfully</string>
 </resources>

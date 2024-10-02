@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sign_in_navigation"
+    app:startDestination="@id/nav_login">
+
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="com.blinkfrosty.medfinder.ui.login.LoginFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_login_to_reset_password"
+            app:destination="@id/nav_forgot_password" />
+        <action
+            android:id="@+id/action_login_to_sign_up"
+            app:destination="@id/nav_sign_up" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_forgot_password"
+        android:name="com.blinkfrosty.medfinder.ui.login.ForgotPasswordFragment"
+        android:label="@string/forgot_password_text"
+        tools:layout="@layout/fragment_forgot_password" />
+
+    <fragment
+        android:id="@+id/nav_sign_up"
+        android:name="com.blinkfrosty.medfinder.ui.login.SignUpFragment"
+        android:label="@string/sign_up_text"
+        tools:layout="@layout/fragment_sign_up" />
+</navigation>

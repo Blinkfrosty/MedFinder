@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "307869738798",
+    "firebase_url": "https://medfinder-1a729-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "medfinder-1a729",
     "storage_bucket": "medfinder-1a729.appspot.com"
   },
@@ -12,7 +13,28 @@
           "package_name": "com.blinkfrosty.medfinder"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "307869738798-r5ikkv00cc8cm2f8jbon2laedh72u2il.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.blinkfrosty.medfinder",
+            "certificate_hash": "b6c099bdcddcc56294790d5554288ffad1de9f65"
+          }
+        },
+        {
+          "client_id": "307869738798-uqfcbcg70rs2qckamtv0hfl8aqj6isnb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.blinkfrosty.medfinder",
+            "certificate_hash": "ea7243605df65bc77b1d1553cc54f58a24e5819f"
+          }
+        },
+        {
+          "client_id": "307869738798-odk3nmsl6mgvkdpa9263osn8o95ft30m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCL0l8zy38-R4XMyH6vpPHB_iEqe0JQ_NA"
@@ -20,7 +42,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "307869738798-odk3nmsl6mgvkdpa9263osn8o95ft30m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

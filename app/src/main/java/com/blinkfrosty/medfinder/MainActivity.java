@@ -1,13 +1,25 @@
 package com.blinkfrosty.medfinder;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import com.blinkfrosty.medfinder.dataaccess.PhotoStorageHelper;
+import com.blinkfrosty.medfinder.dataaccess.UserCallback;
+import com.blinkfrosty.medfinder.dataaccess.UserDataAccessHelper;
+import com.blinkfrosty.medfinder.dataaccess.datastructure.User;
+import com.blinkfrosty.medfinder.helpers.ProgressDialogHelper;
+import com.blinkfrosty.medfinder.helpers.SharedPreferenceHelper;
+import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.core.view.GravityCompat;
@@ -19,10 +31,17 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.blinkfrosty.medfinder.databinding.ActivityMainBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    private TextView headerFullName;
+    private TextView headerEmail;
+    private ImageView headerProfilePhoto;
+    private UserDataAccessHelper userDataAccessHelper;
+    private PhotoStorageHelper photoStorageHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +55,22 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = binding.navView;
         setupDrawerMenu(drawer, navigationView, binding);
         setupViewProfileMenu(navigationView, binding);
+
+        // Initialize nav header views and helpers
+        headerFullName = navigationView.getHeaderView(0).findViewById(R.id.header_full_name);
+        headerEmail = navigationView.getHeaderView(0).findViewById(R.id.header_email);
+        headerProfilePhoto = navigationView.getHeaderView(0).findViewById(R.id.header_profile_photo);
+
+        // Initialize helpers
+        userDataAccessHelper = new UserDataAccessHelper(this);
+        photoStorageHelper = new PhotoStorageHelper(this);
+
+        // Update views with user data listener
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            addUserDataChangeListener(userId);
+        }
     }
 
     @Override
@@ -77,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Show logout dialog
     private void showLogoutDialog() {
+        SharedPreferenceHelper preferenceHelper = new SharedPreferenceHelper(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_logout_confirmation, null);
         builder.setView(dialogView);
@@ -88,8 +124,22 @@ public class MainActivity extends AppCompatActivity {
 
         Button buttonYes = dialogView.findViewById(R.id.logout_dialog_button_yes);
         buttonYes.setOnClickListener(v -> {
-            // TODO: Implement logout and remove this toast message
-            Toast.makeText(MainActivity.this, "Logout not implemented yet", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+            ProgressDialogHelper progressDialogHelper = new ProgressDialogHelper();
+            progressDialogHelper.showProgressDialog(MainActivity.this, getString(R.string.logging_out_progress_text));
+
+            // Sign out from Firebase
+            FirebaseAuth.getInstance().signOut();
+
+            // Sign out from Google
+            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this,
+                    new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build());
+            googleSignInClient.signOut().addOnCompleteListener(task -> {
+                preferenceHelper.setLoggedIn(false);
+                startActivity(new Intent(MainActivity.this, SignInActivity.class));
+                finish();
+                progressDialogHelper.dismissProgressDialog();
+            });
         });
 
         dialog.show();
@@ -111,6 +161,31 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             });
             popupMenu.show();
+        });
+    }
+
+    private void addUserDataChangeListener(String userId) {
+        userDataAccessHelper.addUserDataChangeListener(userId, new UserCallback() {
+            @Override
+            public void onUserRetrieved(User user) {
+                // Update UI with user data
+                headerFullName.setText(user.getFirstName() + " " + user.getLastName());
+                headerEmail.setText(user.getEmail());
+
+                // Load profile photo
+                if (user.getProfilePictureUri() != null && !user.getProfilePictureUri().isEmpty()) {
+                    Glide.with(MainActivity.this)
+                            .load(user.getProfilePictureUri())
+                            .into(headerProfilePhoto);
+                } else {
+                    headerProfilePhoto.setImageResource(R.mipmap.ic_generic_profile_img);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("MainActivity", "Failed to retrieve user data", e);
+            }
         });
     }
 }
