@@ -2,6 +2,7 @@ package com.blinkfrosty.medfinder.ui.login;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,8 +48,10 @@ public class ForgotPasswordFragment extends Fragment {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(getActivity(), R.string.reset_email_sent, Toast.LENGTH_SHORT).show();
+                        Log.d("ForgotPasswordFragment", "Password reset email sent.");
                     } else {
                         Toast.makeText(getActivity(), R.string.reset_email_failed, Toast.LENGTH_SHORT).show();
+                        Log.e("ForgotPasswordFragment", "Failed to send password reset email.", task.getException());
                     }
                 });
     }

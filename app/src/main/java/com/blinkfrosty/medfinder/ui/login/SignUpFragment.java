@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -46,7 +47,7 @@ public class SignUpFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
 
         mAuth = FirebaseAuth.getInstance();
-        userDataAccessHelper = new UserDataAccessHelper(getContext());
+        userDataAccessHelper = new UserDataAccessHelper(requireContext());
 
         firstNameEditText = view.findViewById(R.id.first_name);
         lastNameEditText = view.findViewById(R.id.last_name);
@@ -86,21 +87,24 @@ public class SignUpFragment extends Fragment {
                 if (firebaseUser != null) {
                     String userId = firebaseUser.getUid();
                     try {
-                        userDataAccessHelper.setUser(userId, firstName, lastName, email, phoneNumber, genderCode, "");
+                        userDataAccessHelper.setUser(userId, firstName, lastName, email, phoneNumber, genderCode);
                         progressDialogHelper.dismissProgressDialog();
                         preferenceHelper.setLoggedIn(true); // Note: Enabling auto login for new users by default
-                        Toast.makeText(getContext(), getString(R.string.account_created_successfully), Toast.LENGTH_LONG).show();
+                        Toast.makeText(requireContext(), getString(R.string.account_created_successfully), Toast.LENGTH_LONG).show();
+                        Log.d("SignUpFragment", "User created with email: " + email);
 
                         startActivity(new Intent(getActivity(), MainActivity.class));
                         requireActivity().finish();
                     } catch (Exception e) {
                         progressDialogHelper.dismissProgressDialog();
-                        Toast.makeText(getContext(), "Failed to save user data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(requireContext(), "Failed to save user data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.e("SignUpFragment", "Failed to save user data", e);
                     }
                 }
             } else {
                 progressDialogHelper.dismissProgressDialog();
-                Toast.makeText(getContext(), "Sign Up Failed: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(requireContext(), "Sign Up Failed: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_LONG).show();
+                Log.e("SignUpFragment", "Failed to register user with email", task.getException());
             }
         });
     }
@@ -131,7 +135,7 @@ public class SignUpFragment extends Fragment {
             isValid = false;
         }
         if (TextUtils.isEmpty(genderCode)) {
-            Toast.makeText(getContext(), R.string.gender_required, Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.gender_required, Toast.LENGTH_SHORT).show();
             isValid = false;
         }
         return isValid;

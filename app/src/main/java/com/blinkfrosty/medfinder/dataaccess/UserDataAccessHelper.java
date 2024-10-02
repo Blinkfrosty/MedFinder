@@ -1,6 +1,7 @@
 package com.blinkfrosty.medfinder.dataaccess;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -20,9 +21,10 @@ public class UserDataAccessHelper extends DatabaseHelperBase{
         usersReference = getDatabaseReference().child(USERS);
     }
 
-    public void setUser(String userId, String firstName, String lastName, String email, String phoneNumber, String gender, String profilePictureUrl) {
-        User user = new User(firstName, lastName, email, phoneNumber, gender, profilePictureUrl);
+    public void setUser(String userId, String firstName, String lastName, String email, String phoneNumber, String gender) {
+        User user = new User(firstName, lastName, email, phoneNumber, gender, "");
         usersReference.child(userId).setValue(user);
+        Log.d("UserDataAccessHelper", "User set. User ID: " + userId);
     }
 
     public void getUser(String userId, UserCallback callback) {
@@ -44,7 +46,8 @@ public class UserDataAccessHelper extends DatabaseHelperBase{
         });
     }
 
-    public void updateProfilePictureUrl(String userId, String profilePictureUrl) {
-        usersReference.child(userId).child("profilePictureUrl").setValue(profilePictureUrl);
+    public void updateProfilePictureUri(String userId, String profilePictureUri) {
+        usersReference.child(userId).child("profilePictureUri").setValue(profilePictureUri);
+        Log.d("UserDataAccessHelper", "Profile picture URI updated. User ID: " + userId);
     }
 }

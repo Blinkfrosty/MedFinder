@@ -2,10 +2,12 @@ package com.blinkfrosty.medfinder.ui.login;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,8 +23,11 @@ import androidx.navigation.Navigation;
 
 import com.blinkfrosty.medfinder.MainActivity;
 import com.blinkfrosty.medfinder.R;
+import com.blinkfrosty.medfinder.dataaccess.PhotoStorageHelper;
+import com.blinkfrosty.medfinder.dataaccess.UserDataAccessHelper;
 import com.blinkfrosty.medfinder.helpers.ProgressDialogHelper;
 import com.blinkfrosty.medfinder.helpers.SharedPreferenceHelper;
+import com.blinkfrosty.medfinder.mapper.GenderCodeMapper;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -31,7 +36,10 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import java.util.Objects;
 
 public class LoginFragment extends Fragment {
 
@@ -89,10 +97,12 @@ public class LoginFragment extends Fragment {
                         if (rememberMeCheckBox.isChecked()) {
                             preferenceHelper.setLoggedIn(true);
                         }
+                        Log.d("LoginFragment", "User logged in with email successfully");
                         startActivity(new Intent(getActivity(), MainActivity.class));
                         requireActivity().finish();
                     } else {
                         Toast.makeText(getActivity(), R.string.authentication_failed, Toast.LENGTH_SHORT).show();
+                        Log.e("LoginFragment", "User login with email failed", task.getException());
                     }
                 });
     }
@@ -126,6 +136,7 @@ public class LoginFragment extends Fragment {
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 Toast.makeText(getActivity(), R.string.google_sign_in_failed, Toast.LENGTH_SHORT).show();
+                Log.e("LoginFragment", "Google sign in failed", e);
             }
         }
     }
@@ -137,15 +148,53 @@ public class LoginFragment extends Fragment {
                 .addOnCompleteListener(requireActivity(), task -> {
                     progressDialogHelper.dismissProgressDialog();
                     if (task.isSuccessful()) {
+                        if (Objects.requireNonNull(task.getResult().getAdditionalUserInfo()).isNewUser()) {
+                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                            if (firebaseUser != null) {
+                                storeNewGoogleUserDataInDatabase(firebaseUser, acct);
+                            }
+                        }
                         if (rememberMeCheckBox.isChecked()) {
                             preferenceHelper.setLoggedIn(true);
                         }
+                        Log.d("LoginFragment", "Firebase auth login successful for Google account");
                         startActivity(new Intent(getActivity(), MainActivity.class));
                         requireActivity().finish();
                     } else {
                         Toast.makeText(getActivity(), R.string.authentication_failed, Toast.LENGTH_SHORT).show();
+                        Log.e("LoginFragment", "Firebase auth with credential failed for Google acocunt", task.getException());
                     }
                 });
+    }
+
+    private void storeNewGoogleUserDataInDatabase(FirebaseUser firebaseUser, GoogleSignInAccount acct) {
+        PhotoStorageHelper photoStorageHelper = new PhotoStorageHelper(requireContext());
+        String userId = firebaseUser.getUid();
+        String email = firebaseUser.getEmail();
+        String firstName = acct.getGivenName();
+        String lastName = acct.getFamilyName();
+        String phoneNumber = firebaseUser.getPhoneNumber();
+        String genderCode = GenderCodeMapper.OTHER_CODE;
+        Uri googlePhotoUri = acct.getPhotoUrl();
+
+        UserDataAccessHelper userDataAccessHelper = new UserDataAccessHelper(requireContext());
+        try {
+            userDataAccessHelper.setUser(userId, firstName, lastName, email, phoneNumber, genderCode);
+            Toast.makeText(requireContext(), getString(R.string.account_created_successfully), Toast.LENGTH_LONG).show();
+            Log.d("LoginFragment", "User data saved successfully for new Google user");
+        } catch (Exception e) {
+            Toast.makeText(requireContext(), "Failed to save user data", Toast.LENGTH_LONG).show();
+            Log.e("LoginFragment", "Failed to save user data for new Google user", e);
+        }
+
+        if (googlePhotoUri != null) {
+            photoStorageHelper.storeRemoteImage(userId, googlePhotoUri, uri -> {
+                userDataAccessHelper.updateProfilePictureUri(userId, uri.toString());
+                Log.d("LoginFragment", "Google photo uploaded successfully for new Google user");
+            }, e -> {
+                Log.e("LoginFragment", "Failed to upload photo for new Google user", e);
+            });
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

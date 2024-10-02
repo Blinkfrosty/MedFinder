@@ -10,7 +10,7 @@ public class User {
     public String email;
     public String phoneNumber;
     public String genderCode;
-    public String profilePictureUrl;
+    public String profilePictureUri;
 
     public User(String firstName, String lastName, String email, String phoneNumber,
                 String genderCode, String profilePictureUrl) {
@@ -19,6 +19,6 @@ public class User {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.genderCode = genderCode;
-        this.profilePictureUrl = profilePictureUrl;
+        this.profilePictureUri = profilePictureUrl;
     }
 }
