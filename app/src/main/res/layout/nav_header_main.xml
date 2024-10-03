@@ -33,7 +33,7 @@
                     android:id="@+id/header_profile_photo"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:contentDescription="@string/nav_profile_photo"
+                    android:contentDescription="@string/profile_picture_desc"
                     android:scaleType="centerCrop"
                     app:srcCompat="@mipmap/ic_generic_profile_img" />
 
