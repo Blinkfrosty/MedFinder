@@ -87,7 +87,7 @@ public class SignUpFragment extends Fragment {
                 if (firebaseUser != null) {
                     String userId = firebaseUser.getUid();
                     try {
-                        userDataAccessHelper.setUser(userId, firstName, lastName, email, phoneNumber, genderCode);
+                        userDataAccessHelper.setUser(userId, firstName, lastName, email, phoneNumber, genderCode, "");
                         progressDialogHelper.dismissProgressDialog();
                         preferenceHelper.setLoggedIn(true); // Note: Enabling auto login for new users by default
                         Toast.makeText(requireContext(), getString(R.string.account_created_successfully), Toast.LENGTH_LONG).show();

@@ -179,7 +179,7 @@ public class LoginFragment extends Fragment {
 
         UserDataAccessHelper userDataAccessHelper = new UserDataAccessHelper(requireContext());
         try {
-            userDataAccessHelper.setUser(userId, firstName, lastName, email, phoneNumber, genderCode);
+            userDataAccessHelper.setUser(userId, firstName, lastName, email, phoneNumber, genderCode, "");
             Toast.makeText(requireContext(), getString(R.string.account_created_successfully), Toast.LENGTH_LONG).show();
             Log.d("LoginFragment", "User data saved successfully for new Google user");
         } catch (Exception e) {
