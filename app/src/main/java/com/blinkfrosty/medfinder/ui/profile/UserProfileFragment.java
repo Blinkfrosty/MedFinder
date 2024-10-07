@@ -1,5 +1,7 @@
 package com.blinkfrosty.medfinder.ui.profile;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -34,8 +36,6 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
-
-import static android.app.Activity.RESULT_OK;
 
 public class UserProfileFragment extends Fragment {
 
