@@ -60,4 +60,6 @@
     <string name="get_directions">Get Directions</string>
     <string name="department_hint">Department Name</string>
     <string name="doctor_hint">Doctor Name</string>
+    <string name="hospital">Hospital</string>
+    <string name="neighborhood">Neighborhood</string>
 </resources>
