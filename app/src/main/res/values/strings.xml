@@ -53,13 +53,11 @@
     <string name="password_changed_successfully">Password changed successfully</string>
     <string name="new_password_hint">New Password</string>
     <string name="menu_change_profile_picture">Change Profile Picture</string>
-    <string name="dr_name_placeholder">Dr Full Name Placeholder</string>
-    <string name="dr_degrees_placeholder">Dr Degrees Placeholder</string>
+    <string name="dr_name_placeholder">Dr Full Name</string>
     <string name="department">Department</string>
-    <string name="department_name_placeholder">Department name placeholder</string>
     <string name="location">Location</string>
-    <string name="location_name_placeholder">Location name placeholder</string>
-    <string name="phone_number_placeholder">Phone number placeholder</string>
-    <string name="visiting_hours">Visiting Hours</string>
-    <string name="visiting_hours_placeholder">Visiting hours placeholder</string>
+    <string name="call_for_appointment">Call For Appointment</string>
+    <string name="get_directions">Get Directions</string>
+    <string name="department_hint">Department Name</string>
+    <string name="doctor_hint">Doctor Name</string>
 </resources>

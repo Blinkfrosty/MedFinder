@@ -4,34 +4,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.blinkfrosty.medfinder.databinding.FragmentSearchByDoctorBinding;
+import com.blinkfrosty.medfinder.R;
 
 public class SearchByDoctorFragment extends Fragment {
 
-    private FragmentSearchByDoctorBinding binding;
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        SearchByDoctorViewModel searchByDoctorViewModel =
-                new ViewModelProvider(this).get(SearchByDoctorViewModel.class);
-
-        binding = FragmentSearchByDoctorBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-        final TextView textView = binding.textSearchByDoctor;
-        searchByDoctorViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
-    }
-
+    @Nullable
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_search_by_doctor, container, false);
+
+        return view;
     }
 }
