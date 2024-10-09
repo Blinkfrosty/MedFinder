@@ -11,7 +11,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-public class UserDataAccessHelper extends DatabaseHelperBase{
+public class UserDataAccessHelper extends DatabaseHelperBase {
 
     private final DatabaseReference usersReference;
     private static final String USERS = "users";
