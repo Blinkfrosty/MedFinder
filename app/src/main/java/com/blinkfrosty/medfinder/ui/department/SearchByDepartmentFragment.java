@@ -1,10 +1,13 @@
 package com.blinkfrosty.medfinder.ui.department;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,12 +21,14 @@ import com.blinkfrosty.medfinder.dataaccess.DepartmentCallback;
 import com.blinkfrosty.medfinder.dataaccess.DepartmentDataAccessHelper;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.Department;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchByDepartmentFragment extends Fragment {
 
     private RecyclerView departmentRecyclerView;
-    private DepartmentAdapter departmentAdapter;
+    private EditText searchDepartmentEditText;
+    private List<Department> allDepartments = new ArrayList<>();
 
     @Nullable
     @Override
@@ -32,13 +37,37 @@ public class SearchByDepartmentFragment extends Fragment {
 
         departmentRecyclerView = view.findViewById(R.id.department_list);
         departmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        searchDepartmentEditText = view.findViewById(R.id.department_search);
 
+        searchDepartmentEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // No action needed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterDepartments(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // No action needed
+            }
+        });
+
+        loadDepartmentList();
+
+        return view;
+    }
+
+    private void loadDepartmentList() {
         DepartmentDataAccessHelper departmentDataAccessHelper = new DepartmentDataAccessHelper(getContext());
         departmentDataAccessHelper.getAllDepartments(new DepartmentCallback() {
             @Override
             public void onDepartmentsRetrieved(List<Department> departments) {
-                departmentAdapter = new DepartmentAdapter(departments);
-                departmentRecyclerView.setAdapter(departmentAdapter);
+                allDepartments = departments;
+                filterDepartments(searchDepartmentEditText.getText().toString());
             }
 
             @Override
@@ -52,7 +81,15 @@ public class SearchByDepartmentFragment extends Fragment {
                 Log.e("SearchByDepartmentFragment", "An error occurred while retrieving departments", e);
             }
         });
+    }
 
-        return view;
+    private void filterDepartments(String query) {
+        List<Department> filteredDepartments = new ArrayList<>();
+        for (Department department : allDepartments) {
+            if (department.getName().toLowerCase().contains(query.toLowerCase())) {
+                filteredDepartments.add(department);
+            }
+        }
+        departmentRecyclerView.setAdapter(new DepartmentAdapter(filteredDepartments));
     }
 }
