@@ -11,16 +11,30 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DepartmentDataAccessHelper extends DatabaseHelperBase {
 
+    private static DepartmentDataAccessHelper instance;
     private final DatabaseReference departmentsReference;
     private static final String DEPARTMENTS = "departments";
+    private final Map<String, ValueEventListener> departmentListenersMap;
+    private final List<ValueEventListener> departmentListeners;
 
-    public DepartmentDataAccessHelper(Context context) {
+    private DepartmentDataAccessHelper(Context context) {
         super(context);
         departmentsReference = getDatabaseReference().child(DEPARTMENTS);
+        departmentListenersMap = new HashMap<>();
+        departmentListeners = new ArrayList<>();
+    }
+
+    public static synchronized DepartmentDataAccessHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new DepartmentDataAccessHelper(context.getApplicationContext());
+        }
+        return instance;
     }
 
     public void getDepartmentOnce(String departmentId, DepartmentCallback callback) {
@@ -43,7 +57,7 @@ public class DepartmentDataAccessHelper extends DatabaseHelperBase {
     }
 
     public void addDepartmentDataChangeListener(String departmentId, DepartmentCallback callback) {
-        departmentsReference.child(departmentId).addValueEventListener(new ValueEventListener() {
+        ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Department department = dataSnapshot.getValue(Department.class);
@@ -58,11 +72,14 @@ public class DepartmentDataAccessHelper extends DatabaseHelperBase {
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 callback.onError(databaseError.toException());
             }
-        });
+        };
+
+        departmentsReference.child(departmentId).addValueEventListener(listener);
+        departmentListenersMap.put(departmentId, listener);
     }
 
     public void getAllDepartments(DepartmentCallback callback) {
-        departmentsReference.addValueEventListener(new ValueEventListener() {
+        ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<Department> departments = new ArrayList<>();
@@ -79,6 +96,21 @@ public class DepartmentDataAccessHelper extends DatabaseHelperBase {
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 callback.onError(databaseError.toException());
             }
-        });
+        };
+
+        departmentsReference.addValueEventListener(listener);
+        departmentListeners.add(listener);
+    }
+
+    public void removeDepartmentDataChangeListeners() {
+        for (Map.Entry<String, ValueEventListener> entry : departmentListenersMap.entrySet()) {
+            departmentsReference.child(entry.getKey()).removeEventListener(entry.getValue());
+        }
+        departmentListenersMap.clear();
+
+        for (ValueEventListener listener : departmentListeners) {
+            departmentsReference.removeEventListener(listener);
+        }
+        departmentListeners.clear();
     }
 }

@@ -64,7 +64,7 @@ public class UserProfileFragment extends Fragment {
         genderRadioGroup = view.findViewById(R.id.gender_radio_group);
         profilePictureImageView = view.findViewById(R.id.profile_picture);
 
-        userDataAccessHelper = new UserDataAccessHelper(requireContext());
+        userDataAccessHelper = UserDataAccessHelper.getInstance(requireContext());
         photoStorageHelper = new PhotoStorageHelper(requireContext());
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 

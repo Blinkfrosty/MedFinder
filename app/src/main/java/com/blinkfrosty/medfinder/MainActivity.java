@@ -18,6 +18,9 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.blinkfrosty.medfinder.dataaccess.DepartmentDataAccessHelper;
+import com.blinkfrosty.medfinder.dataaccess.DoctorDataAccessHelper;
+import com.blinkfrosty.medfinder.dataaccess.HospitalDataAccessHelper;
 import com.blinkfrosty.medfinder.dataaccess.PhotoStorageHelper;
 import com.blinkfrosty.medfinder.dataaccess.UserCallback;
 import com.blinkfrosty.medfinder.dataaccess.UserDataAccessHelper;
@@ -39,8 +42,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView headerFullName;
     private TextView headerEmail;
     private ImageView headerProfilePhoto;
+
     private UserDataAccessHelper userDataAccessHelper;
-    private PhotoStorageHelper photoStorageHelper;
+    private DepartmentDataAccessHelper departmentDataAccessHelper;
+    private DoctorDataAccessHelper doctorDataAccessHelper;
+    private HospitalDataAccessHelper hospitalDataAccessHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +67,10 @@ public class MainActivity extends AppCompatActivity {
         headerProfilePhoto = navigationView.getHeaderView(0).findViewById(R.id.header_profile_photo);
 
         // Initialize helpers
-        userDataAccessHelper = new UserDataAccessHelper(this);
-        photoStorageHelper = new PhotoStorageHelper(this);
+        userDataAccessHelper = UserDataAccessHelper.getInstance(this);
+        departmentDataAccessHelper = DepartmentDataAccessHelper.getInstance(this);
+        doctorDataAccessHelper = DoctorDataAccessHelper.getInstance(this);
+        hospitalDataAccessHelper = HospitalDataAccessHelper.getInstance(this);
 
         // Update views with user data listener
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -127,6 +135,9 @@ public class MainActivity extends AppCompatActivity {
             ProgressDialogHelper progressDialogHelper = new ProgressDialogHelper();
             progressDialogHelper.showProgressDialog(MainActivity.this, getString(R.string.logging_out_progress_text));
 
+            // Dispose data listeners
+            disposeDataListeners();
+
             // Sign out from Firebase
             FirebaseAuth.getInstance().signOut();
 
@@ -142,6 +153,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    // Dispose data listeners
+    private void disposeDataListeners() {
+        userDataAccessHelper.removeUserDataChangeListeners();
+        departmentDataAccessHelper.removeDepartmentDataChangeListeners();
+        doctorDataAccessHelper.removeDoctorDataChangeListeners();
+        hospitalDataAccessHelper.removeHospitalDataChangeListeners();
     }
 
     // Setup the profile image view to show a popup menu with the option to view the user profile

@@ -47,7 +47,7 @@ public class SignUpFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
 
         mAuth = FirebaseAuth.getInstance();
-        userDataAccessHelper = new UserDataAccessHelper(requireContext());
+        userDataAccessHelper = UserDataAccessHelper.getInstance(requireContext());
 
         firstNameEditText = view.findViewById(R.id.first_name);
         lastNameEditText = view.findViewById(R.id.last_name);

@@ -26,6 +26,7 @@ import java.util.List;
 
 public class SearchByDepartmentFragment extends Fragment {
 
+    private DepartmentDataAccessHelper departmentDataAccessHelper;
     private RecyclerView departmentRecyclerView;
     private EditText searchDepartmentEditText;
     private List<Department> allDepartments = new ArrayList<>();
@@ -35,6 +36,7 @@ public class SearchByDepartmentFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search_by_department, container, false);
 
+        departmentDataAccessHelper = DepartmentDataAccessHelper.getInstance(getContext());
         departmentRecyclerView = view.findViewById(R.id.department_list);
         departmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         searchDepartmentEditText = view.findViewById(R.id.department_search);
@@ -61,8 +63,13 @@ public class SearchByDepartmentFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        allDepartments.clear();
+    }
+
     private void loadDepartmentList() {
-        DepartmentDataAccessHelper departmentDataAccessHelper = new DepartmentDataAccessHelper(getContext());
         departmentDataAccessHelper.getAllDepartments(new DepartmentCallback() {
             @Override
             public void onDepartmentsRetrieved(List<Department> departments) {

@@ -11,16 +11,32 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DoctorDataAccessHelper extends DatabaseHelperBase {
 
+    private static DoctorDataAccessHelper instance;
     private final DatabaseReference doctorsReference;
     private static final String DOCTORS = "doctors";
+    private final Map<String, ValueEventListener> doctorListenersMap;
+    private final Map<String, ValueEventListener> doctorsByDepartmentListenersMap;
+    private final List<ValueEventListener> doctorListeners;
 
-    public DoctorDataAccessHelper(Context context) {
+    private DoctorDataAccessHelper(Context context) {
         super(context);
         doctorsReference = getDatabaseReference().child(DOCTORS);
+        doctorListenersMap = new HashMap<>();
+        doctorsByDepartmentListenersMap = new HashMap<>();
+        doctorListeners = new ArrayList<>();
+    }
+
+    public static synchronized DoctorDataAccessHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new DoctorDataAccessHelper(context.getApplicationContext());
+        }
+        return instance;
     }
 
     public void getDoctorOnce(String doctorId, DoctorCallback callback) {
@@ -43,7 +59,7 @@ public class DoctorDataAccessHelper extends DatabaseHelperBase {
     }
 
     public void addDoctorDataChangeListener(String doctorId, DoctorCallback callback) {
-        doctorsReference.child(doctorId).addValueEventListener(new ValueEventListener() {
+        ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Doctor doctor = dataSnapshot.getValue(Doctor.class);
@@ -58,11 +74,14 @@ public class DoctorDataAccessHelper extends DatabaseHelperBase {
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 callback.onError(databaseError.toException());
             }
-        });
+        };
+
+        doctorsReference.child(doctorId).addValueEventListener(listener);
+        doctorListenersMap.put(doctorId, listener);
     }
 
     public void getAllDoctors(DoctorCallback callback) {
-        doctorsReference.addValueEventListener(new ValueEventListener() {
+        ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<Doctor> doctors = new ArrayList<>();
@@ -79,11 +98,14 @@ public class DoctorDataAccessHelper extends DatabaseHelperBase {
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 callback.onError(databaseError.toException());
             }
-        });
+        };
+
+        doctorsReference.addValueEventListener(listener);
+        doctorListeners.add(listener);
     }
 
     public void getDoctorsByDepartment(String departmentId, DoctorCallback callback) {
-        doctorsReference.orderByChild("departmentId").equalTo(departmentId).addValueEventListener(new ValueEventListener() {
+        ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<Doctor> doctors = new ArrayList<>();
@@ -100,6 +122,26 @@ public class DoctorDataAccessHelper extends DatabaseHelperBase {
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 callback.onError(databaseError.toException());
             }
-        });
+        };
+
+        doctorsReference.orderByChild("departmentId").equalTo(departmentId).addValueEventListener(listener);
+        doctorsByDepartmentListenersMap.put(departmentId, listener);
+    }
+
+    public void removeDoctorDataChangeListeners() {
+        for (Map.Entry<String, ValueEventListener> entry : doctorListenersMap.entrySet()) {
+            doctorsReference.child(entry.getKey()).removeEventListener(entry.getValue());
+        }
+        doctorListenersMap.clear();
+
+        for (Map.Entry<String, ValueEventListener> entry : doctorsByDepartmentListenersMap.entrySet()) {
+            doctorsReference.orderByChild("departmentId").equalTo(entry.getKey()).removeEventListener(entry.getValue());
+        }
+        doctorsByDepartmentListenersMap.clear();
+
+        for (ValueEventListener listener : doctorListeners) {
+            doctorsReference.removeEventListener(listener);
+        }
+        doctorListeners.clear();
     }
 }
