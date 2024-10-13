@@ -44,10 +44,15 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
         holder.doctorDegrees.setText(doctor.getDegrees());
 
         // Load the profile picture using Glide
-        Glide.with(holder.itemView.getContext())
-                .load(doctor.getProfilePictureUri())
-                .placeholder(R.mipmap.ic_generic_profile_img) // Placeholder image
-                .into(holder.doctorProfilePicture);
+        String profilePictureUri = doctor.getProfilePictureUri();
+        if (profilePictureUri == null || profilePictureUri.isEmpty()) {
+            holder.doctorProfilePicture.setImageResource(R.mipmap.ic_generic_profile_img);
+        } else {
+            Glide.with(holder.itemView.getContext())
+                    .load(profilePictureUri)
+                    .placeholder(R.mipmap.ic_generic_profile_img) // Placeholder image
+                    .into(holder.doctorProfilePicture);
+        }
 
         // Set the hospital info
         String hospitalName = getHospitalNameById(doctor.getHospitalId());
