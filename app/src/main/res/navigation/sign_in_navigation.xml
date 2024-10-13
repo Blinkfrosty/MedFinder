@@ -12,10 +12,18 @@
         tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_login_to_reset_password"
-            app:destination="@id/nav_forgot_password" />
+            app:destination="@id/nav_forgot_password"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_login_to_sign_up"
-            app:destination="@id/nav_sign_up" />
+            app:destination="@id/nav_sign_up"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment

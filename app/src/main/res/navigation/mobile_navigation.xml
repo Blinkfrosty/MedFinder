@@ -12,7 +12,11 @@
         tools:layout="@layout/fragment_search_by_department" >
         <action
             android:id="@+id/action_search_by_department_to_doctors_in_department"
-            app:destination="@id/nav_doctors_in_department" />
+            app:destination="@id/nav_doctors_in_department"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -22,7 +26,11 @@
         tools:layout="@layout/fragment_search_by_doctor" >
         <action
             android:id="@+id/action_nav_doctors_in_department_to_nav_doctor_profile"
-            app:destination="@id/nav_doctor_profile" />
+            app:destination="@id/nav_doctor_profile"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -32,7 +40,11 @@
         tools:layout="@layout/fragment_search_by_doctor" >
         <action
             android:id="@+id/action_search_by_doctor_to_doctor_profile"
-            app:destination="@id/nav_doctor_profile" />
+            app:destination="@id/nav_doctor_profile"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
