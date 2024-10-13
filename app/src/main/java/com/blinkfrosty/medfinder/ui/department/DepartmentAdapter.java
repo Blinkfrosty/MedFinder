@@ -3,6 +3,7 @@ package com.blinkfrosty.medfinder.ui.department;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,11 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.De
         Department department = departments.get(position);
         holder.departmentName.setText(department.getName());
         holder.departmentDescription.setText(department.getDescription());
+
+        holder.itemView.setOnClickListener(v -> {
+            v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.item_click_animation));
+            // Handle the click event here
+        });
     }
 
     @Override

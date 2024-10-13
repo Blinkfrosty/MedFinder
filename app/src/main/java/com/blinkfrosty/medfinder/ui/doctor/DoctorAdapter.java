@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -61,6 +62,7 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
 
         // Set click listener to navigate to DoctorProfileFragment
         holder.itemView.setOnClickListener(v -> {
+            v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.item_click_animation));
             Bundle bundle = new Bundle();
             bundle.putString("doctorId", doctor.getId());
             navController.navigate(R.id.action_search_by_doctor_to_doctor_profile, bundle);
