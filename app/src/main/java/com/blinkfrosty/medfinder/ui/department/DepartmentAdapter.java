@@ -24,7 +24,7 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.De
     @NonNull
     @Override
     public DepartmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.department_list_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_department, parent, false);
         return new DepartmentViewHolder(view);
     }
 

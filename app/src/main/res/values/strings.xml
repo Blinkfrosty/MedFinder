@@ -62,4 +62,7 @@
     <string name="doctor_hint">Doctor Name</string>
     <string name="hospital">Hospital</string>
     <string name="neighborhood">Neighborhood</string>
+    <string name="label_doctors_in_department">Doctors in Department</string>
+    <string name="label_doctor_profile">Doctor Profile</string>
+    <string name="schedule_online">Schedule an appointment online</string>
 </resources>
