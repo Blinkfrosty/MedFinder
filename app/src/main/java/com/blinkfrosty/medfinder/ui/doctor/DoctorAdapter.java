@@ -21,9 +21,9 @@ import java.util.List;
 
 public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorViewHolder> {
 
-    private final List<Doctor> doctors;
-    private final List<Hospital> allHospitals;
-    private final NavController navController;
+    protected final List<Doctor> doctors;
+    protected final List<Hospital> allHospitals;
+    protected final NavController navController;
 
     public DoctorAdapter(List<Doctor> doctors, List<Hospital> allHospitals, NavController navController) {
         this.doctors = doctors;
@@ -63,10 +63,14 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
         // Set click listener to navigate to DoctorProfileFragment
         holder.itemView.setOnClickListener(v -> {
             v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.item_click_animation));
-            Bundle bundle = new Bundle();
-            bundle.putString("doctorId", doctor.getId());
-            navController.navigate(R.id.action_search_by_doctor_to_doctor_profile, bundle);
+            navigateToDoctorProfile(doctor.getId());
         });
+    }
+
+    protected void navigateToDoctorProfile(String doctorId) {
+        Bundle bundle = new Bundle();
+        bundle.putString("doctorId", doctorId);
+        navController.navigate(R.id.action_search_by_doctor_to_doctor_profile, bundle);
     }
 
     @Override
@@ -89,7 +93,7 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
         }
     }
 
-    private String getHospitalNameById(String hospitalId) {
+    protected String getHospitalNameById(String hospitalId) {
         for (Hospital hospital : allHospitals) {
             if (hospital.getId().equals(hospitalId)) {
                 return hospital.getName();
@@ -98,7 +102,7 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
         return "";
     }
 
-    private String getHospitalNeighborhoodById(String hospitalId) {
+    protected String getHospitalNeighborhoodById(String hospitalId) {
         for (Hospital hospital : allHospitals) {
             if (hospital.getId().equals(hospitalId)) {
                 return hospital.getNeighborhood();

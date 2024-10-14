@@ -1,5 +1,6 @@
 package com.blinkfrosty.medfinder.ui.department;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blinkfrosty.medfinder.R;
@@ -37,7 +39,10 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.De
 
         holder.itemView.setOnClickListener(v -> {
             v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.item_click_animation));
-            // Handle the click event here
+            Bundle args = new Bundle();
+            args.putString("departmentId", department.getId());
+            args.putString("departmentName", department.getName());
+            Navigation.findNavController(v).navigate(R.id.action_search_by_department_to_doctors_in_department, args);
         });
     }
 

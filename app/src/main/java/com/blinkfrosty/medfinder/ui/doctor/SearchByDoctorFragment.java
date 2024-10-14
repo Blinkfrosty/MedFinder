@@ -35,17 +35,17 @@ import java.util.Set;
 
 public class SearchByDoctorFragment extends Fragment {
 
-    private DoctorDataAccessHelper doctorDataAccessHelper;
-    private HospitalDataAccessHelper hospitalDataAccessHelper;
-    private RecyclerView doctorRecyclerView;
-    private EditText searchDoctorEditText;
-    private Spinner hospitalSpinner;
-    private Spinner neighborhoodSpinner;
-    private List<Doctor> allDoctors = new ArrayList<>();
-    private List<Hospital> allHospitals = new ArrayList<>();
-    private List<String> allNeighborhoods = new ArrayList<>();
+    protected DoctorDataAccessHelper doctorDataAccessHelper;
+    protected HospitalDataAccessHelper hospitalDataAccessHelper;
+    protected RecyclerView doctorRecyclerView;
+    protected EditText searchDoctorEditText;
+    protected Spinner hospitalSpinner;
+    protected Spinner neighborhoodSpinner;
+    protected List<Doctor> allDoctors = new ArrayList<>();
+    protected List<Hospital> allHospitals = new ArrayList<>();
+    protected List<String> allNeighborhoods = new ArrayList<>();
 
-    private static final String SPINNER_DEFAULT_ITEM = "All";
+    protected static final String SPINNER_DEFAULT_ITEM = "All";
 
     @Nullable
     @Override
@@ -116,7 +116,7 @@ public class SearchByDoctorFragment extends Fragment {
         allNeighborhoods.clear();
     }
 
-    private void loadHospitalData() {
+    protected void loadHospitalData() {
         hospitalDataAccessHelper.getAllHospitals(new HospitalCallback() {
             @Override
             public void onHospitalsRetrieved(List<Hospital> hospitals) {
@@ -157,7 +157,7 @@ public class SearchByDoctorFragment extends Fragment {
         });
     }
 
-    private void loadDoctorList() {
+    protected void loadDoctorList() {
         doctorDataAccessHelper.getAllDoctors(new DoctorCallback() {
             @Override
             public void onDoctorsRetrieved(List<Doctor> doctors) {
@@ -178,7 +178,7 @@ public class SearchByDoctorFragment extends Fragment {
         });
     }
 
-    private void filterDoctors() {
+    protected void filterDoctors() {
         String query = searchDoctorEditText.getText().toString().toLowerCase();
         String selectedHospital = hospitalSpinner.getSelectedItem() != null && !SPINNER_DEFAULT_ITEM.equals(hospitalSpinner.getSelectedItem().toString())
                 ? hospitalSpinner.getSelectedItem().toString() : "";
@@ -198,7 +198,7 @@ public class SearchByDoctorFragment extends Fragment {
         doctorRecyclerView.setAdapter(new DoctorAdapter(filteredDoctors, allHospitals, NavHostFragment.findNavController(this)));
     }
 
-    private String getHospitalNameById(String hospitalId) {
+    protected String getHospitalNameById(String hospitalId) {
         for (Hospital hospital : allHospitals) {
             if (hospital.getId().equals(hospitalId)) {
                 return hospital.getName();
@@ -207,7 +207,7 @@ public class SearchByDoctorFragment extends Fragment {
         return "";
     }
 
-    private String getHospitalNeighborhoodById(String hospitalId) {
+    protected String getHospitalNeighborhoodById(String hospitalId) {
         for (Hospital hospital : allHospitals) {
             if (hospital.getId().equals(hospitalId)) {
                 return hospital.getNeighborhood();
