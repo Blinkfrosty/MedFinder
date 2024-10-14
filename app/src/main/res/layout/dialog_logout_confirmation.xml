@@ -19,11 +19,12 @@
         android:id="@+id/logout_dialog_button_yes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/dialog_yes"
-        app:layout_constraintTop_toBottomOf="@id/logout_dialog_text_confirmation"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="16dp"
-        android:layout_marginStart="40dp" />
+        android:theme="@style/Button.Red"
+        android:text="@string/dialog_yes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logout_dialog_text_confirmation" />
 
     <Button
         android:id="@+id/logout_dialog_button_no"
