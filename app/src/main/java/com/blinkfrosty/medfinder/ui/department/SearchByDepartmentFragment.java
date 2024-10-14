@@ -99,6 +99,9 @@ public class SearchByDepartmentFragment extends Fragment {
             }
         }
 
+        // Sort the filtered departments by name
+        filteredDepartments.sort((department1, department2) -> department1.getName().compareToIgnoreCase(department2.getName()));
+
         departmentRecyclerView.setAdapter(new DepartmentAdapter(filteredDepartments));
         departmentRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down));
         departmentRecyclerView.scheduleLayoutAnimation();

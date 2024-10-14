@@ -197,6 +197,9 @@ public class SearchByDoctorFragment extends Fragment {
             }
         }
 
+        // Sort the filtered doctors by name
+        filteredDoctors.sort((doctor1, doctor2) -> doctor1.getName().compareToIgnoreCase(doctor2.getName()));
+
         doctorRecyclerView.setAdapter(new DoctorAdapter(filteredDoctors, allHospitals, NavHostFragment.findNavController(this)));
         doctorRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down));
         doctorRecyclerView.scheduleLayoutAnimation();
