@@ -4,16 +4,18 @@ MedFinder is an Android application that allows users to search for healthcare p
 
 ## Features
 
-- Search for doctors by name
+- Search for doctors by name and location
 - Search for doctors by department
 - Navigation drawer for easy access to different sections
 - User profile section in the navigation drawer
+- Doctor profile section with contact information
 
 ## Screenshots
 
-![Home Screen](screenshots/home_screen.png)
+![Login Screen](screenshots/login.png)
 ![Search by Department](screenshots/search_by_department.png)
 ![Search by Doctor](screenshots/search_by_doctor.png)
+![Doctor Profile](screenshots/doctor_profile.png)
 
 ## Installation
 
@@ -44,4 +46,4 @@ MedFinder is an Android application that allows users to search for healthcare p
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
