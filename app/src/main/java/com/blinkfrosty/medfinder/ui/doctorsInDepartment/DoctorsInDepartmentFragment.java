@@ -1,10 +1,12 @@
 package com.blinkfrosty.medfinder.ui.doctorsInDepartment;
 
 import android.os.Bundle;
+import android.view.animation.AnimationUtils;
 
 import androidx.annotation.Nullable;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.blinkfrosty.medfinder.R;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.Doctor;
 import com.blinkfrosty.medfinder.ui.doctor.SearchByDoctorFragment;
 
@@ -42,6 +44,9 @@ public class DoctorsInDepartmentFragment extends SearchByDoctorFragment {
                 filteredDoctors.add(doctor);
             }
         }
+
         doctorRecyclerView.setAdapter(new DoctorInDepartmentAdapter(filteredDoctors, allHospitals, NavHostFragment.findNavController(this)));
+        doctorRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down));
+        doctorRecyclerView.scheduleLayoutAnimation();
     }
 }

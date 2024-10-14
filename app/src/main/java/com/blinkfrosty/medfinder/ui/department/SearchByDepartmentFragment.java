@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -97,6 +98,9 @@ public class SearchByDepartmentFragment extends Fragment {
                 filteredDepartments.add(department);
             }
         }
+
         departmentRecyclerView.setAdapter(new DepartmentAdapter(filteredDepartments));
+        departmentRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down));
+        departmentRecyclerView.scheduleLayoutAnimation();
     }
 }

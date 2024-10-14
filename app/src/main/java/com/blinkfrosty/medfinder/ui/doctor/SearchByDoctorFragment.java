@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -195,7 +196,10 @@ public class SearchByDoctorFragment extends Fragment {
                 filteredDoctors.add(doctor);
             }
         }
+
         doctorRecyclerView.setAdapter(new DoctorAdapter(filteredDoctors, allHospitals, NavHostFragment.findNavController(this)));
+        doctorRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down));
+        doctorRecyclerView.scheduleLayoutAnimation();
     }
 
     protected String getHospitalNameById(String hospitalId) {
