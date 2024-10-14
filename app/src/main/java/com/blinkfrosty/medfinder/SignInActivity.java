@@ -10,6 +10,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.blinkfrosty.medfinder.helpers.EmergencyDialogHelper;
 import com.blinkfrosty.medfinder.helpers.ProgressDialogHelper;
 import com.blinkfrosty.medfinder.helpers.SharedPreferenceHelper;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,6 +47,9 @@ public class SignInActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_sign_in);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
+        // Set up FAB click listener
+        findViewById(R.id.fab_emergency_call).setOnClickListener(v -> EmergencyDialogHelper.showEmergencyCallDialog(SignInActivity.this));
     }
 
     @Override

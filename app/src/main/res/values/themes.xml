@@ -23,4 +23,12 @@
     <style name="Theme.MedFinder.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.MedFinder.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Button.Red" parent="ThemeOverlay.AppCompat">
+        <item name="android:backgroundTint">@color/derk_red</item>
+    </style>
+
+    <style name="AppIcon" parent="ThemeOverlay.AppCompat">
+        <item name="android:tint">@color/dark_gray</item>
+    </style>
 </resources>

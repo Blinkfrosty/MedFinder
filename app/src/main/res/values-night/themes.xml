@@ -14,4 +14,12 @@
         <!-- Customize your theme here. -->
         <item name="recyclerViewStyle">@style/RecyclerViewStyle</item>
     </style>
+
+    <style name="Button.Red" parent="ThemeOverlay.AppCompat">
+        <item name="android:backgroundTint">@color/light_red</item>
+    </style>
+
+    <style name="AppIcon" parent="ThemeOverlay.AppCompat">
+        <item name="android:tint">@color/light_gray</item>
+    </style>
 </resources>
