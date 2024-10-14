@@ -21,11 +21,11 @@ import androidx.navigation.ui.NavigationUI;
 import com.blinkfrosty.medfinder.dataaccess.DepartmentDataAccessHelper;
 import com.blinkfrosty.medfinder.dataaccess.DoctorDataAccessHelper;
 import com.blinkfrosty.medfinder.dataaccess.HospitalDataAccessHelper;
-import com.blinkfrosty.medfinder.dataaccess.PhotoStorageHelper;
 import com.blinkfrosty.medfinder.dataaccess.UserCallback;
 import com.blinkfrosty.medfinder.dataaccess.UserDataAccessHelper;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.User;
 import com.blinkfrosty.medfinder.databinding.ActivityMainBinding;
+import com.blinkfrosty.medfinder.helpers.EmergencyDialogHelper;
 import com.blinkfrosty.medfinder.helpers.ProgressDialogHelper;
 import com.blinkfrosty.medfinder.helpers.SharedPreferenceHelper;
 import com.bumptech.glide.Glide;
@@ -78,6 +78,9 @@ public class MainActivity extends AppCompatActivity {
             String userId = currentUser.getUid();
             addUserDataChangeListener(userId);
         }
+
+        // Set up FAB click listener
+        findViewById(R.id.fab_emergency_call).setOnClickListener(v -> EmergencyDialogHelper.showEmergencyCallDialog(MainActivity.this));
     }
 
     @Override
