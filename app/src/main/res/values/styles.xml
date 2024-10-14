@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="RecyclerViewStyle">
+        <item name="layoutManager">androidx.recyclerview.widget.GridLayoutManager</item>
+        <item name="android:orientation">vertical</item>
+        <item name="spanCount">1</item>
+        <item name="android:background">@drawable/recycler_view_border</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:clipToPadding">false</item>
+    </style>
+</resources>

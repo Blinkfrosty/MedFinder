@@ -11,14 +11,27 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-public class UserDataAccessHelper extends DatabaseHelperBase{
+import java.util.HashMap;
+import java.util.Map;
 
+public class UserDataAccessHelper extends DatabaseHelperBase {
+
+    private static UserDataAccessHelper instance;
     private final DatabaseReference usersReference;
     private static final String USERS = "users";
+    private final Map<String, ValueEventListener> userListenersMap;
 
-    public UserDataAccessHelper(Context context) {
+    private UserDataAccessHelper(Context context) {
         super(context);
         usersReference = getDatabaseReference().child(USERS);
+        userListenersMap = new HashMap<>();
+    }
+
+    public static synchronized UserDataAccessHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new UserDataAccessHelper(context.getApplicationContext());
+        }
+        return instance;
     }
 
     public void setUser(String userId, String firstName, String lastName, String email, String phoneNumber,
@@ -48,7 +61,7 @@ public class UserDataAccessHelper extends DatabaseHelperBase{
     }
 
     public void addUserDataChangeListener(String userId, UserCallback callback) {
-        usersReference.child(userId).addValueEventListener(new ValueEventListener() {
+        ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
@@ -63,7 +76,17 @@ public class UserDataAccessHelper extends DatabaseHelperBase{
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 callback.onError(databaseError.toException());
             }
-        });
+        };
+
+        usersReference.child(userId).addValueEventListener(listener);
+        userListenersMap.put(userId, listener);
+    }
+
+    public void removeUserDataChangeListeners() {
+        for (Map.Entry<String, ValueEventListener> entry : userListenersMap.entrySet()) {
+            usersReference.child(entry.getKey()).removeEventListener(entry.getValue());
+        }
+        userListenersMap.clear();
     }
 
     public void updateProfilePictureUri(String userId, String profilePictureUri) {

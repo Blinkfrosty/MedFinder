@@ -1,5 +1,7 @@
 package com.blinkfrosty.medfinder.ui.profile;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -35,8 +37,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 
-import static android.app.Activity.RESULT_OK;
-
 public class UserProfileFragment extends Fragment {
 
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -64,7 +64,7 @@ public class UserProfileFragment extends Fragment {
         genderRadioGroup = view.findViewById(R.id.gender_radio_group);
         profilePictureImageView = view.findViewById(R.id.profile_picture);
 
-        userDataAccessHelper = new UserDataAccessHelper(requireContext());
+        userDataAccessHelper = UserDataAccessHelper.getInstance(requireContext());
         photoStorageHelper = new PhotoStorageHelper(requireContext());
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 

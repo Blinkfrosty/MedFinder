@@ -177,7 +177,7 @@ public class LoginFragment extends Fragment {
         String genderCode = GenderCodeMapper.OTHER_CODE;
         Uri googlePhotoUri = acct.getPhotoUrl();
 
-        UserDataAccessHelper userDataAccessHelper = new UserDataAccessHelper(requireContext());
+        UserDataAccessHelper userDataAccessHelper = UserDataAccessHelper.getInstance(requireContext());
         try {
             userDataAccessHelper.setUser(userId, firstName, lastName, email, phoneNumber, genderCode, "");
             Toast.makeText(requireContext(), getString(R.string.account_created_successfully), Toast.LENGTH_LONG).show();

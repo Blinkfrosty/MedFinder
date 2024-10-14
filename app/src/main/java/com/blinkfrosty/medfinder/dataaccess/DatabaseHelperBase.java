@@ -1,9 +1,10 @@
 package com.blinkfrosty.medfinder.dataaccess;
 
+import android.content.Context;
+
+import com.blinkfrosty.medfinder.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import android.content.Context;
-import com.blinkfrosty.medfinder.R;
 
 public class DatabaseHelperBase {
 
