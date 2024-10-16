@@ -52,7 +52,7 @@
 
         <TextView
             android:id="@+id/doctor_name"
-            android:layout_width="250dp"
+            android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:text="@string/dr_name_placeholder"
@@ -63,7 +63,7 @@
 
         <TextView
             android:id="@+id/doctor_degrees"
-            android:layout_width="250dp"
+            android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textSize="15sp"
