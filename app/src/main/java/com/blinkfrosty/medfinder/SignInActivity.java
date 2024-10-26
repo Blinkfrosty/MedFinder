@@ -2,6 +2,8 @@ package com.blinkfrosty.medfinder;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -33,12 +35,23 @@ public class SignInActivity extends AppCompatActivity {
             progressDialogHelper.showProgressDialog(this, getString(R.string.logging_in_progress_text));
             FirebaseUser currentUser = mAuth.getCurrentUser();
             if (currentUser != null) {
-                startActivity(new Intent(this, MainActivity.class));
-                finish();
+                currentUser.getIdToken(true).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        startActivity(new Intent(this, MainActivity.class));
+                        finish();
+                    } else {
+                        preferenceHelper.setLoggedIn(false);
+                        mAuth.signOut();
+                        Toast.makeText(this, "Please log-in again", Toast.LENGTH_SHORT).show();
+                        Log.d("SignInActivity", "Auto log-in failed. User id token is not valid.");
+                    }
+                    progressDialogHelper.dismissProgressDialog();
+                });
             } else {
+                preferenceHelper.setLoggedIn(false);
                 mAuth.signOut();
+                progressDialogHelper.dismissProgressDialog();
             }
-            progressDialogHelper.dismissProgressDialog();
         }
 
         Toolbar toolbar = findViewById(R.id.toolbar);

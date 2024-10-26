@@ -11,17 +11,23 @@ public class User {
     private String phoneNumber;
     private String genderCode;
     private String profilePictureUri;
+    private Boolean isPatient;
+    private Boolean isHospitalAdmin;
+    private Boolean isSystemAdmin;
 
     public User() { }
 
     public User(String firstName, String lastName, String email, String phoneNumber,
-                String genderCode, String profilePictureUrl) {
+                String genderCode, String profilePictureUrl, Boolean isPatient, Boolean isHospitalAdmin, Boolean isSystemAdmin) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.genderCode = genderCode;
         this.profilePictureUri = profilePictureUrl;
+        this.isPatient = isPatient;
+        this.isHospitalAdmin = isHospitalAdmin;
+        this.isSystemAdmin = isSystemAdmin;
     }
 
     public String getFirstName() {
@@ -46,5 +52,17 @@ public class User {
 
     public String getProfilePictureUri() {
         return profilePictureUri;
+    }
+
+    public Boolean getIsPatient() {
+        return isPatient;
+    }
+
+    public Boolean getIsHospitalAdmin() {
+        return isHospitalAdmin;
+    }
+
+    public Boolean getIsSystemAdmin() {
+        return isSystemAdmin;
     }
 }

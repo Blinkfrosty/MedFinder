@@ -36,7 +36,8 @@ public class UserDataAccessHelper extends DatabaseHelperBase {
 
     public void setUser(String userId, String firstName, String lastName, String email, String phoneNumber,
                         String gender, String profilePictureUri) {
-        User user = new User(firstName, lastName, email, phoneNumber, gender, profilePictureUri);
+        User user = new User(firstName, lastName, email, phoneNumber, gender, profilePictureUri,
+                true, false, false);
         usersReference.child(userId).setValue(user);
         Log.d("UserDataAccessHelper", "User set. User ID: " + userId);
     }

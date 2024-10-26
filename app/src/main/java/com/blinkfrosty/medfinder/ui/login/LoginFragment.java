@@ -24,7 +24,9 @@ import androidx.navigation.Navigation;
 import com.blinkfrosty.medfinder.MainActivity;
 import com.blinkfrosty.medfinder.R;
 import com.blinkfrosty.medfinder.dataaccess.PhotoStorageHelper;
+import com.blinkfrosty.medfinder.dataaccess.UserCallback;
 import com.blinkfrosty.medfinder.dataaccess.UserDataAccessHelper;
+import com.blinkfrosty.medfinder.dataaccess.datastructure.User;
 import com.blinkfrosty.medfinder.helpers.ProgressDialogHelper;
 import com.blinkfrosty.medfinder.helpers.SharedPreferenceHelper;
 import com.blinkfrosty.medfinder.mapper.GenderCodeMapper;
@@ -50,6 +52,7 @@ public class LoginFragment extends Fragment {
     private CheckBox rememberMeCheckBox;
     private ProgressDialogHelper progressDialogHelper;
     private SharedPreferenceHelper preferenceHelper;
+    private UserDataAccessHelper userDataAccessHelper;
 
     @Nullable
     @Override
@@ -62,6 +65,7 @@ public class LoginFragment extends Fragment {
         rememberMeCheckBox = view.findViewById(R.id.remember_me);
         progressDialogHelper = new ProgressDialogHelper();
         preferenceHelper = new SharedPreferenceHelper(requireContext());
+        userDataAccessHelper = UserDataAccessHelper.getInstance(requireContext());
 
         setPasswordVisibilityToggle();
         view.findViewById(R.id.login_button).setOnClickListener(v -> loginUser());
@@ -92,15 +96,38 @@ public class LoginFragment extends Fragment {
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
-                    progressDialogHelper.dismissProgressDialog();
                     if (task.isSuccessful()) {
-                        if (rememberMeCheckBox.isChecked()) {
-                            preferenceHelper.setLoggedIn(true);
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        if (firebaseUser != null) {
+                            userDataAccessHelper.getUserOnce(firebaseUser.getUid(), new UserCallback() {
+                                @Override
+                                public void onUserRetrieved(User user) {
+                                    if (user.getIsPatient() && !user.getIsHospitalAdmin() && !user.getIsSystemAdmin()) {
+                                        if (rememberMeCheckBox.isChecked()) {
+                                            preferenceHelper.setLoggedIn(true);
+                                        }
+                                        Log.d("LoginFragment", "User logged in with email successfully");
+                                        startActivity(new Intent(getActivity(), MainActivity.class));
+                                        requireActivity().finish();
+                                    } else {
+                                        mAuth.signOut();
+                                        Toast.makeText(getActivity(), "Only patients can use the MedFinder application",
+                                                Toast.LENGTH_LONG).show();
+                                        Log.e("LoginFragment", "User is not a patient or has admin roles");
+                                    }
+                                    progressDialogHelper.dismissProgressDialog();
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    progressDialogHelper.dismissProgressDialog();
+                                    Toast.makeText(getActivity(), R.string.authentication_failed, Toast.LENGTH_SHORT).show();
+                                    Log.e("LoginFragment", "Failed to retrieve user data", e);
+                                }
+                            });
                         }
-                        Log.d("LoginFragment", "User logged in with email successfully");
-                        startActivity(new Intent(getActivity(), MainActivity.class));
-                        requireActivity().finish();
                     } else {
+                        progressDialogHelper.dismissProgressDialog();
                         Toast.makeText(getActivity(), R.string.authentication_failed, Toast.LENGTH_SHORT).show();
                         Log.e("LoginFragment", "User login with email failed", task.getException());
                     }
@@ -177,7 +204,6 @@ public class LoginFragment extends Fragment {
         String genderCode = GenderCodeMapper.OTHER_CODE;
         Uri googlePhotoUri = acct.getPhotoUrl();
 
-        UserDataAccessHelper userDataAccessHelper = UserDataAccessHelper.getInstance(requireContext());
         try {
             userDataAccessHelper.setUser(userId, firstName, lastName, email, phoneNumber, genderCode, "");
             Toast.makeText(requireContext(), getString(R.string.account_created_successfully), Toast.LENGTH_LONG).show();
@@ -191,9 +217,7 @@ public class LoginFragment extends Fragment {
             photoStorageHelper.storeRemoteImage(userId, googlePhotoUri, uri -> {
                 userDataAccessHelper.updateProfilePictureUri(userId, uri.toString());
                 Log.d("LoginFragment", "Google photo uploaded successfully for new Google user");
-            }, e -> {
-                Log.e("LoginFragment", "Failed to upload photo for new Google user", e);
-            });
+            }, e -> Log.e("LoginFragment", "Failed to upload photo for new Google user", e));
         }
     }
 
