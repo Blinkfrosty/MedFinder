@@ -5,6 +5,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class User {
 
+    private String id;
     private String firstName;
     private String lastName;
     private String email;
@@ -17,8 +18,9 @@ public class User {
 
     public User() { }
 
-    public User(String firstName, String lastName, String email, String phoneNumber,
+    public User(String id, String firstName, String lastName, String email, String phoneNumber,
                 String genderCode, String profilePictureUrl, Boolean isPatient, Boolean isHospitalAdmin, Boolean isSystemAdmin) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -28,6 +30,10 @@ public class User {
         this.isPatient = isPatient;
         this.isHospitalAdmin = isHospitalAdmin;
         this.isSystemAdmin = isSystemAdmin;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getFirstName() {
