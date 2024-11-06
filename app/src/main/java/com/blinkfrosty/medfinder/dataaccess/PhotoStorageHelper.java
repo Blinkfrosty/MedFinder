@@ -32,7 +32,7 @@ public class PhotoStorageHelper {
     }
 
     public void storeLocalImage(String userId, Uri fileUri, OnSuccessListener<Uri> onSuccessListener, OnFailureListener onFailureListener) {
-        StorageReference userPhotoRef = storageReference.child(userId + ".jpg");
+        StorageReference userPhotoRef = storageReference.child(userId);
         userPhotoRef.putFile(fileUri)
                 .addOnSuccessListener(taskSnapshot -> userPhotoRef.getDownloadUrl().addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener))
                 .addOnFailureListener(onFailureListener);
@@ -65,7 +65,7 @@ public class PhotoStorageHelper {
                 connection.connect();
 
                 inputStream = connection.getInputStream();
-                File tempFile = File.createTempFile("profile_picture", ".jpg", context.getCacheDir());
+                File tempFile = File.createTempFile("profile_picture", null, context.getCacheDir());
                 outputStream = new FileOutputStream(tempFile);
 
                 byte[] buffer = new byte[1024];
@@ -92,7 +92,7 @@ public class PhotoStorageHelper {
         @Override
         protected void onPostExecute(Uri localUri) {
             if (localUri != null) {
-                StorageReference userPhotoRef = storageReference.child(userId + ".jpg");
+                StorageReference userPhotoRef = storageReference.child(userId);
                 userPhotoRef.putFile(localUri)
                         .addOnSuccessListener(taskSnapshot -> userPhotoRef.getDownloadUrl()
                                 .addOnSuccessListener(onSuccessListener)
