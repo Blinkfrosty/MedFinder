@@ -25,8 +25,11 @@ import com.blinkfrosty.medfinder.dataaccess.HospitalDataAccessHelper;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.Department;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.Doctor;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.Hospital;
+import com.blinkfrosty.medfinder.dataaccess.datastructure.OfficeHours;
 import com.bumptech.glide.Glide;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class DoctorProfileFragment extends Fragment {
@@ -36,9 +39,16 @@ public class DoctorProfileFragment extends Fragment {
     private TextView departmentNameTextView;
     private TextView locationNameTextView;
     private TextView phoneNumberTextView;
+    private TextView mondayHoursTextView;
+    private TextView tuesdayHoursTextView;
+    private TextView wednesdayHoursTextView;
+    private TextView thursdayHoursTextView;
+    private TextView fridayHoursTextView;
+    private TextView saturdayHoursTextView;
+    private TextView sundayHoursTextView;
     private ImageView doctorProfilePictureImageView;
     private Button callButton;
-    private Button scheduleOnlineButton;
+    private Button visitWebsiteButton;
     private Button directionsButton;
 
     @Nullable
@@ -51,9 +61,16 @@ public class DoctorProfileFragment extends Fragment {
         departmentNameTextView = view.findViewById(R.id.department_name);
         locationNameTextView = view.findViewById(R.id.location_name);
         phoneNumberTextView = view.findViewById(R.id.phone_number);
+        mondayHoursTextView = view.findViewById(R.id.monday_hours);
+        tuesdayHoursTextView = view.findViewById(R.id.tuesday_hours);
+        wednesdayHoursTextView = view.findViewById(R.id.wednesday_hours);
+        thursdayHoursTextView = view.findViewById(R.id.thursday_hours);
+        fridayHoursTextView = view.findViewById(R.id.friday_hours);
+        saturdayHoursTextView = view.findViewById(R.id.saturday_hours);
+        sundayHoursTextView = view.findViewById(R.id.sunday_hours);
         doctorProfilePictureImageView = view.findViewById(R.id.doctor_profile_picture);
         callButton = view.findViewById(R.id.call_button);
-        scheduleOnlineButton = view.findViewById(R.id.schedule_online_button);
+        visitWebsiteButton = view.findViewById(R.id.visit_website_button);
         directionsButton = view.findViewById(R.id.directions_button);
 
         if (getArguments() != null) {
@@ -71,6 +88,64 @@ public class DoctorProfileFragment extends Fragment {
                 doctorNameTextView.setText(doctor.getName());
                 doctorDegreesTextView.setText(doctor.getDegrees());
                 phoneNumberTextView.setText(doctor.getPhoneNumber());
+
+                OfficeHours officeHours = doctor.getOfficeHours();
+
+                if (officeHours.getMonday().isAvailable()) {
+                    String hoursText = formatOfficeHours(officeHours.getMonday().getStartTime(),
+                            officeHours.getMonday().getEndTime());
+                    mondayHoursTextView.setText(hoursText);
+                } else {
+                    mondayHoursTextView.setText(R.string.closed);
+                }
+
+                if (officeHours.getTuesday().isAvailable()) {
+                    String hoursText = formatOfficeHours(officeHours.getTuesday().getStartTime(),
+                            officeHours.getTuesday().getEndTime());
+                    tuesdayHoursTextView.setText(hoursText);
+                } else {
+                    tuesdayHoursTextView.setText(R.string.closed);
+                }
+
+                if (officeHours.getWednesday().isAvailable()) {
+                    String hoursText = formatOfficeHours(officeHours.getWednesday().getStartTime(),
+                            officeHours.getWednesday().getEndTime());
+                    wednesdayHoursTextView.setText(hoursText);
+                } else {
+                    wednesdayHoursTextView.setText(R.string.closed);
+                }
+
+                if (officeHours.getThursday().isAvailable()) {
+                    String hoursText = formatOfficeHours(officeHours.getThursday().getStartTime(),
+                            officeHours.getThursday().getEndTime());
+                    thursdayHoursTextView.setText(hoursText);
+                } else {
+                    thursdayHoursTextView.setText(R.string.closed);
+                }
+
+                if (officeHours.getFriday().isAvailable()) {
+                    String hoursText = formatOfficeHours(officeHours.getFriday().getStartTime(),
+                            officeHours.getFriday().getEndTime());
+                    fridayHoursTextView.setText(hoursText);
+                } else {
+                    fridayHoursTextView.setText(R.string.closed);
+                }
+
+                if (officeHours.getSaturday().isAvailable()) {
+                    String hoursText = formatOfficeHours(officeHours.getSaturday().getStartTime(),
+                            officeHours.getSaturday().getEndTime());
+                    saturdayHoursTextView.setText(hoursText);
+                } else {
+                    saturdayHoursTextView.setText(R.string.closed);
+                }
+
+                if (officeHours.getSunday().isAvailable()) {
+                    String hoursText = formatOfficeHours(officeHours.getSunday().getStartTime(),
+                            officeHours.getSunday().getEndTime());
+                    sundayHoursTextView.setText(hoursText);
+                } else {
+                    sundayHoursTextView.setText(R.string.closed);
+                }
 
                 // Load the profile picture using Glide
                 String profilePictureUri = doctor.getProfilePictureUri();
@@ -102,16 +177,16 @@ public class DoctorProfileFragment extends Fragment {
                             callButton.setEnabled(false);
                         }
 
-                        // Set up the schedule online button
+                        // Set up the visit website/appointment button
                         if (hospital.getAppointmentLink() != null && !hospital.getAppointmentLink().isEmpty()) {
-                            scheduleOnlineButton.setEnabled(true);
-                            scheduleOnlineButton.setOnClickListener(v -> {
+                            visitWebsiteButton.setEnabled(true);
+                            visitWebsiteButton.setOnClickListener(v -> {
                                 Intent intent = new Intent(Intent.ACTION_VIEW);
                                 intent.setData(Uri.parse(hospital.getAppointmentLink()));
                                 startActivity(intent);
                             });
                         } else {
-                            scheduleOnlineButton.setEnabled(false);
+                            visitWebsiteButton.setEnabled(false);
                         }
 
                         // Set up the directions button
@@ -166,5 +241,19 @@ public class DoctorProfileFragment extends Fragment {
                 Log.e("DoctorProfileFragment", "An error occurred while retrieving doctor data", e);
             }
         });
+    }
+
+    private String formatOfficeHours(String startTime, String endTime) {
+        SimpleDateFormat _12HourSdf = new SimpleDateFormat("hh:mm a");
+        SimpleDateFormat _24HourSdf = new SimpleDateFormat("HH:mm");
+
+        try {
+            Date start = _24HourSdf.parse(startTime);
+            Date end = _24HourSdf.parse(endTime);
+            return _12HourSdf.format(start) + " - " + _12HourSdf.format(end);
+        } catch (Exception e) {
+            Log.e("DoctorProfileFragment", "An error occurred while parsing office hours", e);
+            return startTime + " - " + endTime;
+        }
     }
 }

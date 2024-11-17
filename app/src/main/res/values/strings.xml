@@ -56,7 +56,7 @@
     <string name="dr_name_placeholder">Dr Full Name</string>
     <string name="department">Department</string>
     <string name="location">Location</string>
-    <string name="call_for_appointment">Call For Appointment</string>
+    <string name="call">Call</string>
     <string name="get_directions">Get Directions</string>
     <string name="department_hint">Department Name</string>
     <string name="doctor_hint">Doctor Name</string>
@@ -64,7 +64,16 @@
     <string name="neighborhood">Neighborhood</string>
     <string name="label_doctors_in_department">Doctors in {departmentName}</string>
     <string name="label_doctor_profile">Doctor Profile</string>
-    <string name="schedule_online">Schedule an appointment online</string>
+    <string name="visit_website">Visit Website</string>
     <string name="call_emergency_hotline">Call Emergency Hotline 999?</string>
     <string name="emergency_call">Call Emergency Hotline</string>
+    <string name="clinic_hours">Clinic Hours</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+    <string name="closed">Closed</string>
 </resources>

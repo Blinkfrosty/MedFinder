@@ -84,7 +84,7 @@
 
         <TextView
             android:id="@+id/department_title"
-            android:layout_width="175dp"
+            android:layout_width="135dp"
             android:layout_height="wrap_content"
             android:text="@string/department"
             android:textStyle="bold"
@@ -94,7 +94,7 @@
 
         <TextView
             android:id="@+id/department_name"
-            android:layout_width="180dp"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -113,7 +113,7 @@
 
         <TextView
             android:id="@+id/location_title"
-            android:layout_width="175dp"
+            android:layout_width="135dp"
             android:layout_height="wrap_content"
             android:text="@string/location"
             android:textStyle="bold"
@@ -123,7 +123,7 @@
 
         <TextView
             android:id="@+id/location_name"
-            android:layout_width="180dp"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -142,7 +142,7 @@
 
         <TextView
             android:id="@+id/phone_title"
-            android:layout_width="175dp"
+            android:layout_width="135dp"
             android:layout_height="wrap_content"
             android:text="@string/phone_number_hint"
             android:textStyle="bold"
@@ -152,7 +152,7 @@
 
         <TextView
             android:id="@+id/phone_number"
-            android:layout_width="180dp"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -160,29 +160,281 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
-        android:id="@+id/call_button"
-        android:layout_width="210dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/office_hours_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="60dp"
-        android:text="@string/call_for_appointment"
+        android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/phone_container" />
+        app:layout_constraintTop_toBottomOf="@id/phone_container">
 
-    <Button
-        android:id="@+id/schedule_online_button"
-        android:layout_width="210dp"
+        <TextView
+            android:id="@+id/office_hours_title"
+            android:layout_width="135dp"
+            android:layout_height="wrap_content"
+            android:text="@string/clinic_hours"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/day_schedule_container"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/office_hours_title"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/monday_container"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/monday_title"
+                    android:layout_width="85dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/monday"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/monday_hours"
+                    android:layout_width="135dp"
+                    android:layout_height="wrap_content"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/monday_title"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/tuesday_container"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/monday_container">
+
+                <TextView
+                    android:id="@+id/tuesday_title"
+                    android:layout_width="85dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tuesday"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tuesday_hours"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tuesday_title"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/wednesday_container"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tuesday_container">
+
+                <TextView
+                    android:id="@+id/wednesday_title"
+                    android:layout_width="85dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:text="@string/wednesday"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/wednesday_hours"
+                    android:layout_width="135dp"
+                    android:layout_height="wrap_content"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/wednesday_title"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/thursday_container"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/wednesday_container">
+
+                <TextView
+                    android:id="@+id/thursday_title"
+                    android:layout_width="85dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/thursday"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/thursday_hours"
+                    android:layout_width="135dp"
+                    android:layout_height="wrap_content"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/thursday_title"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/friday_container"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/thursday_container">
+
+                <TextView
+                    android:id="@+id/friday_title"
+                    android:layout_width="85dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/friday"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/friday_hours"
+                    android:layout_width="135dp"
+                    android:layout_height="wrap_content"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/friday_title"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/saturday_container"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/friday_container">
+
+                <TextView
+                    android:id="@+id/saturday_title"
+                    android:layout_width="85dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/saturday"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/saturday_hours"
+                    android:layout_width="135dp"
+                    android:layout_height="wrap_content"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/saturday_title"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/sunday_container"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/saturday_container">
+
+                <TextView
+                    android:id="@+id/sunday_title"
+                    android:layout_width="85dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sunday"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/sunday_hours"
+                    android:layout_width="135dp"
+                    android:layout_height="wrap_content"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/sunday_title"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contact_buttons_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="60dp"
-        android:text="@string/schedule_online"
+        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/call_button" />
+        app:layout_constraintTop_toBottomOf="@id/office_hours_container">
+
+        <Button
+            android:id="@+id/call_button"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="@string/call"
+            android:backgroundTint="@color/off_white"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/visit_website_button"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="6dp"
+            android:text="@string/visit_website"
+            android:backgroundTint="@color/off_white"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
         android:id="@+id/directions_button"
@@ -194,7 +446,7 @@
         android:text="@string/get_directions"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/schedule_online_button" />
+        app:layout_constraintTop_toBottomOf="@id/contact_buttons_container" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

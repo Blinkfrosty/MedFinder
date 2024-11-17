@@ -12,11 +12,12 @@ public class Doctor {
     private String profilePictureUri;
     private String departmentId;
     private String hospitalId;
+    private OfficeHours officeHours;
 
     public Doctor() { }
 
     public Doctor(String id, String name, String degrees, String phoneNumber, String profilePictureUri,
-                  String departmentId, String hospitalId) {
+                  String departmentId, String hospitalId, OfficeHours officeHours) {
         this.id = id;
         this.name = name;
         this.degrees = degrees;
@@ -24,6 +25,7 @@ public class Doctor {
         this.profilePictureUri = profilePictureUri;
         this.departmentId = departmentId;
         this.hospitalId = hospitalId;
+        this.officeHours = officeHours;
     }
 
     public String getId() {
@@ -52,5 +54,9 @@ public class Doctor {
 
     public String getHospitalId() {
         return hospitalId;
+    }
+
+    public OfficeHours getOfficeHours() {
+        return officeHours;
     }
 }
