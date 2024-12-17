@@ -76,4 +76,9 @@
     <string name="saturday">Saturday</string>
     <string name="sunday">Sunday</string>
     <string name="closed">Closed</string>
+    <string name="reason_for_visit">Reason for visit</string>
+    <string name="confirm_appointment">Confirm Appointment</string>
+    <string name="schedule_appointment">Schedule Appointment</string>
+    <string name="select_a_time">Select a time</string>
+    <string name="error_day_unavailable">No appointments are available for the selected day</string>
 </resources>

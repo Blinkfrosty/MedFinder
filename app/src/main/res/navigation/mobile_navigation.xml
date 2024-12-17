@@ -67,6 +67,23 @@
         <argument
             android:name="doctorId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_nav_doctor_profile_to_nav_schedule_appointment"
+            app:destination="@id/nav_schedule_appointment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_schedule_appointment"
+        android:name="com.blinkfrosty.medfinder.ui.appointment.ScheduleAppointmentFragment"
+        android:label="@string/schedule_appointment"
+        tools:layout="@layout/fragment_schedule_appointment">
+        <argument
+            android:name="doctor"
+            app:argType="com.blinkfrosty.medfinder.dataaccess.datastructure.Doctor" />
     </fragment>
 
 </navigation>

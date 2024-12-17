@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.blinkfrosty.medfinder.R;
 import com.blinkfrosty.medfinder.dataaccess.DepartmentCallback;
@@ -50,6 +51,7 @@ public class DoctorProfileFragment extends Fragment {
     private Button callButton;
     private Button visitWebsiteButton;
     private Button directionsButton;
+    private Button scheduleAppointmentButton;
 
     @Nullable
     @Override
@@ -72,6 +74,7 @@ public class DoctorProfileFragment extends Fragment {
         callButton = view.findViewById(R.id.call_button);
         visitWebsiteButton = view.findViewById(R.id.visit_website_button);
         directionsButton = view.findViewById(R.id.directions_button);
+        scheduleAppointmentButton = view.findViewById(R.id.schedule_appointment_button);
 
         if (getArguments() != null) {
             String doctorId = getArguments().getString("doctorId");
@@ -198,6 +201,13 @@ public class DoctorProfileFragment extends Fragment {
                             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                             mapIntent.setPackage("com.google.android.apps.maps");
                             startActivity(mapIntent);
+                        });
+
+                        // Set up the schedule appointment button
+                        scheduleAppointmentButton.setOnClickListener(v -> {
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("doctor", doctor);
+                            Navigation.findNavController(v).navigate(R.id.action_nav_doctor_profile_to_nav_schedule_appointment, bundle);
                         });
                     }
 
