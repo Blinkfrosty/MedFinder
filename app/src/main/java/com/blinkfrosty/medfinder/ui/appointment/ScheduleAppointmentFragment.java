@@ -14,21 +14,28 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.blinkfrosty.medfinder.R;
+import com.blinkfrosty.medfinder.dataaccess.AppointmentCallback;
+import com.blinkfrosty.medfinder.dataaccess.AppointmentDataAccessHelper;
+import com.blinkfrosty.medfinder.dataaccess.datastructure.Appointment;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.Doctor;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.OfficeHours;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.DaySchedule;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ScheduleAppointmentFragment extends Fragment {
 
@@ -38,6 +45,7 @@ public class ScheduleAppointmentFragment extends Fragment {
     private EditText reasonEditText;
     private Button scheduleButton;
     private Doctor doctor;
+    private long selectedDateMillis;
 
     @Nullable
     @Override
@@ -80,8 +88,40 @@ public class ScheduleAppointmentFragment extends Fragment {
             }
         });
 
-        scheduleButton.setOnClickListener(v -> Log.d("ScheduleAppointment", "Confirm appointment button clicked"));
+        scheduleButton.setOnClickListener(v -> {
+            String reason = reasonEditText.getText().toString().trim();
+            String time = (String) timeSpinner.getSelectedItem();
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            String doctorId = doctor.getId();
+            String hospitalId = doctor.getHospitalId();
 
+            // Convert selected date to the required format
+            SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+            String date = sdfDate.format(new Date(selectedDateMillis));
+
+            // Convert time to 24-hour format
+            SimpleDateFormat sdf12 = new SimpleDateFormat("hh:mm a");
+            SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm");
+            String appointmentStartTime = "";
+            try {
+                Date dateObj = sdf12.parse(time);
+                appointmentStartTime = sdf24.format(dateObj);
+            } catch (Exception e) {
+                Log.e("ScheduleAppointment", "Error parsing time - " + e.getMessage());
+            }
+
+            AppointmentDataAccessHelper.getInstance(requireContext()).addAppointment(userId, appointmentStartTime, date, reason, doctorId, hospitalId);
+
+            // Display a toast message
+            Toast.makeText(requireContext(), "Appointment scheduled successfully", Toast.LENGTH_SHORT).show();
+
+            // Reset the EditText and Spinner
+            reasonEditText.setText("");
+            timeSpinner.setSelection(0);
+
+            // Navigate back to the previous fragment
+            requireActivity().getSupportFragmentManager().popBackStack();
+        });
         return view;
     }
 
@@ -91,13 +131,14 @@ public class ScheduleAppointmentFragment extends Fragment {
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             Calendar selectedDate = Calendar.getInstance();
             selectedDate.set(year, month, dayOfMonth);
+            selectedDateMillis = selectedDate.getTimeInMillis();
             updateAvailableTimes(selectedDate);
         });
 
         // Set the current date on the CalendarView
         Calendar calendar = Calendar.getInstance();
-        long currentDate = calendar.getTimeInMillis();
-        calendarView.setDate(currentDate, false, true);
+        selectedDateMillis = calendar.getTimeInMillis();
+        calendarView.setDate(selectedDateMillis, false, true);
         updateAvailableTimes(calendar);
     }
 
@@ -106,12 +147,25 @@ public class ScheduleAppointmentFragment extends Fragment {
         DaySchedule daySchedule = getDaySchedule(dayOfWeek);
 
         if (daySchedule != null && daySchedule.isAvailable()) {
-            List<String> timeSlots = generateTimeSlots(daySchedule.getStartTime(), daySchedule.getEndTime());
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, timeSlots);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            timeSpinner.setAdapter(adapter);
-            timeSpinner.setEnabled(true);
-            errorTextView.setVisibility(View.GONE);
+            SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+            String date = sdfDate.format(new Date(selectedDateMillis));
+
+            AppointmentDataAccessHelper.getInstance(requireContext()).getAppointmentsForDoctorOnDate(doctor.getId(), date, new AppointmentCallback() {
+                @Override
+                public void onAppointmentsRetrieved(List<Appointment> appointments) {
+                    List<String> timeSlots = generateTimeSlots(daySchedule.getStartTime(), daySchedule.getEndTime(), appointments);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, timeSlots);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    timeSpinner.setAdapter(adapter);
+                    timeSpinner.setEnabled(true);
+                    errorTextView.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("ScheduleAppointment", "Error retrieving appointments - " + e.getMessage());
+                }
+            });
         } else {
             timeSpinner.setAdapter(null);
             timeSpinner.setEnabled(false);
@@ -143,10 +197,15 @@ public class ScheduleAppointmentFragment extends Fragment {
         }
     }
 
-    private List<String> generateTimeSlots(String startTime, String endTime) {
+    private List<String> generateTimeSlots(String startTime, String endTime, List<Appointment> appointments) {
         List<String> timeSlots = new ArrayList<>();
         SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm");
         SimpleDateFormat sdf12 = new SimpleDateFormat("hh:mm a");
+        Set<String> bookedSlots = new HashSet<>();
+
+        for (Appointment appointment : appointments) {
+            bookedSlots.add(appointment.getAppointmentStartTime());
+        }
 
         try {
             Date start = sdf24.parse(startTime);
@@ -155,7 +214,10 @@ public class ScheduleAppointmentFragment extends Fragment {
             calendar.setTime(start);
 
             while (calendar.getTime().before(end)) {
-                timeSlots.add(sdf12.format(calendar.getTime()));
+                String slot = sdf24.format(calendar.getTime());
+                if (!bookedSlots.contains(slot)) {
+                    timeSlots.add(sdf12.format(calendar.getTime()));
+                }
                 calendar.add(Calendar.MINUTE, 30);
             }
         } catch (Exception e) {
