@@ -11,18 +11,21 @@ public class Appointment {
     private String date;
     private String reasonForVisit;
     private String doctorId;
+    private String departmentId;
     private String hospitalId;
     private String appointmentNotes;
 
     public Appointment() { }
 
-    public Appointment(String id, String userId, String appointmentStartTime, String date, String reasonForVisit, String doctorId, String hospitalId) {
+    public Appointment(String id, String userId, String appointmentStartTime, String date,
+                       String reasonForVisit, String doctorId, String departmentId, String hospitalId) {
         this.id = id;
         this.userId = userId;
         this.appointmentStartTime = appointmentStartTime;
         this.date = date;
         this.reasonForVisit = reasonForVisit;
         this.doctorId = doctorId;
+        this.departmentId = departmentId;
         this.hospitalId = hospitalId;
         this.appointmentNotes = "";
     }
@@ -49,6 +52,10 @@ public class Appointment {
 
     public String getDoctorId() {
         return doctorId;
+    }
+
+    public String getDepartmentId() {
+        return departmentId;
     }
 
     public String getHospitalId() {

@@ -86,4 +86,10 @@
             app:argType="com.blinkfrosty.medfinder.dataaccess.datastructure.Doctor" />
     </fragment>
 
+    <fragment
+        android:id="@+id/nav_upcoming_appointments"
+        android:name="com.blinkfrosty.medfinder.ui.appointment.UpcomingAppointmentsFragment"
+        android:label="@string/menu_upcoming_appointments"
+        tools:layout="@layout/fragment_upcoming_appointments" />
+
 </navigation>

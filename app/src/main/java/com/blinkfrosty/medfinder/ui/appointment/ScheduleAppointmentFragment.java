@@ -93,6 +93,7 @@ public class ScheduleAppointmentFragment extends Fragment {
             String time = (String) timeSpinner.getSelectedItem();
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
             String doctorId = doctor.getId();
+            String departmentId = doctor.getDepartmentId();
             String hospitalId = doctor.getHospitalId();
 
             // Convert selected date to the required format
@@ -110,7 +111,8 @@ public class ScheduleAppointmentFragment extends Fragment {
                 Log.e("ScheduleAppointment", "Error parsing time - " + e.getMessage());
             }
 
-            AppointmentDataAccessHelper.getInstance(requireContext()).addAppointment(userId, appointmentStartTime, date, reason, doctorId, hospitalId);
+            AppointmentDataAccessHelper.getInstance(requireContext()).addAppointment(userId,
+                    appointmentStartTime, date, reason, doctorId, departmentId, hospitalId);
 
             // Display a toast message
             Toast.makeText(requireContext(), "Appointment scheduled successfully", Toast.LENGTH_SHORT).show();

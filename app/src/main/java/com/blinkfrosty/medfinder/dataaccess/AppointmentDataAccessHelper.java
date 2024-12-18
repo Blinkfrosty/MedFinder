@@ -33,9 +33,11 @@ public class AppointmentDataAccessHelper extends DatabaseHelperBase {
         return instance;
     }
 
-    public void addAppointment(String userId, String appointmentStartTime, String date, String reasonForVisit, String doctorId, String hospitalId) {
+    public void addAppointment(String userId, String appointmentStartTime, String date, String reasonForVisit,
+                               String doctorId, String departmentId, String hospitalId) {
         String appointmentId = UUID.randomUUID().toString().replace("-", "");
-        Appointment appointment = new Appointment(appointmentId, userId, appointmentStartTime, date, reasonForVisit, doctorId, hospitalId);
+        Appointment appointment = new Appointment(appointmentId, userId, appointmentStartTime, date,
+                reasonForVisit, doctorId, departmentId, hospitalId);
         appointmentsReference.child(appointmentId).setValue(appointment)
                 .addOnSuccessListener(aVoid -> Log.d("AppointmentDataAccessHelper", "Appointment stored successfully"))
                 .addOnFailureListener(e -> Log.e("AppointmentDataAccessHelper", "Failed to store appointment", e));
@@ -49,6 +51,27 @@ public class AppointmentDataAccessHelper extends DatabaseHelperBase {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Appointment appointment = snapshot.getValue(Appointment.class);
                     if (appointment != null && appointment.getDate().equals(date)) {
+                        appointments.add(appointment);
+                    }
+                }
+                callback.onAppointmentsRetrieved(appointments);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.onError(databaseError.toException());
+            }
+        });
+    }
+
+    public void getAppointmentsForUser(String userId, AppointmentCallback callback) {
+        appointmentsReference.orderByChild("userId").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Appointment> appointments = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Appointment appointment = snapshot.getValue(Appointment.class);
+                    if (appointment != null) {
                         appointments.add(appointment);
                     }
                 }

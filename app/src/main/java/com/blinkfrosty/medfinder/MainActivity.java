@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_search_by_department,
                 R.id.nav_search_by_doctor,
+                R.id.nav_upcoming_appointments,
                 R.id.nav_logout)
                 .setOpenableLayout(drawer)
                 .build();
