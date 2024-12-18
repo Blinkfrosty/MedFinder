@@ -22,10 +22,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blinkfrosty.medfinder.R;
+import com.blinkfrosty.medfinder.dataaccess.DepartmentCallback;
+import com.blinkfrosty.medfinder.dataaccess.DepartmentDataAccessHelper;
 import com.blinkfrosty.medfinder.dataaccess.DoctorCallback;
 import com.blinkfrosty.medfinder.dataaccess.DoctorDataAccessHelper;
 import com.blinkfrosty.medfinder.dataaccess.HospitalCallback;
 import com.blinkfrosty.medfinder.dataaccess.HospitalDataAccessHelper;
+import com.blinkfrosty.medfinder.dataaccess.datastructure.Department;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.Doctor;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.Hospital;
 
@@ -42,7 +45,9 @@ public class SearchByDoctorFragment extends Fragment {
     protected EditText searchDoctorEditText;
     protected Spinner hospitalSpinner;
     protected Spinner neighborhoodSpinner;
+    protected Spinner departmentSpinner;
     protected List<Doctor> allDoctors = new ArrayList<>();
+    protected List<Department> allDepartments = new ArrayList<>();
     protected List<Hospital> allHospitals = new ArrayList<>();
     protected List<String> allNeighborhoods = new ArrayList<>();
 
@@ -61,6 +66,7 @@ public class SearchByDoctorFragment extends Fragment {
         searchDoctorEditText = view.findViewById(R.id.doctor_search);
         hospitalSpinner = view.findViewById(R.id.hospital_spinner);
         neighborhoodSpinner = view.findViewById(R.id.neighborhood_spinner);
+        departmentSpinner = view.findViewById(R.id.department_spinner);
 
         searchDoctorEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -91,6 +97,18 @@ public class SearchByDoctorFragment extends Fragment {
             }
         });
 
+        departmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                filterDoctors();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // No action needed
+            }
+        });
+
         neighborhoodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -105,6 +123,7 @@ public class SearchByDoctorFragment extends Fragment {
 
         loadHospitalData();
         loadDoctorList();
+        loadDepartmentData();
 
         return view;
     }
@@ -115,6 +134,7 @@ public class SearchByDoctorFragment extends Fragment {
         allDoctors.clear();
         allHospitals.clear();
         allNeighborhoods.clear();
+        allDepartments.clear();
     }
 
     protected void loadHospitalData() {
@@ -158,6 +178,36 @@ public class SearchByDoctorFragment extends Fragment {
         });
     }
 
+    protected void loadDepartmentData() {
+        DepartmentDataAccessHelper.getInstance(getContext()).getAllDepartments(new DepartmentCallback() {
+            @Override
+            public void onDepartmentsRetrieved(List<Department> departments) {
+                allDepartments = departments;
+
+                List<String> departmentNames = new ArrayList<>();
+                departmentNames.add(SPINNER_DEFAULT_ITEM); // Add default item
+                for (Department department : departments) {
+                    departmentNames.add(department.getName());
+                }
+
+                ArrayAdapter<String> departmentAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, departmentNames);
+                departmentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                departmentSpinner.setAdapter(departmentAdapter);
+            }
+
+            @Override
+            public void onDepartmentRetrieved(Department department) {
+                // Not used in this context
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(getContext(), "An error occurred while retrieving departments", Toast.LENGTH_SHORT).show();
+                Log.e("SearchByDoctorFragment", "An error occurred while retrieving departments", e);
+            }
+        });
+    }
+
     protected void loadDoctorList() {
         doctorDataAccessHelper.getAllDoctors(new DoctorCallback() {
             @Override
@@ -185,14 +235,17 @@ public class SearchByDoctorFragment extends Fragment {
                 ? hospitalSpinner.getSelectedItem().toString() : "";
         String selectedNeighborhood = neighborhoodSpinner.getSelectedItem() != null && !SPINNER_DEFAULT_ITEM.equals(neighborhoodSpinner.getSelectedItem().toString())
                 ? neighborhoodSpinner.getSelectedItem().toString() : "";
+        String selectedDepartmentName = departmentSpinner.getSelectedItem() != null && !SPINNER_DEFAULT_ITEM.equals(departmentSpinner.getSelectedItem().toString())
+                ? departmentSpinner.getSelectedItem().toString() : "";
 
         List<Doctor> filteredDoctors = new ArrayList<>();
         for (Doctor doctor : allDoctors) {
             boolean matchesQuery = doctor.getName().toLowerCase().contains(query);
             boolean matchesHospital = selectedHospital.isEmpty() || getHospitalNameById(doctor.getHospitalId()).equals(selectedHospital);
             boolean matchesNeighborhood = selectedNeighborhood.isEmpty() || getHospitalNeighborhoodById(doctor.getHospitalId()).equals(selectedNeighborhood);
+            boolean matchesDepartment = selectedDepartmentName.isEmpty() || getDepartmentNameById(doctor.getDepartmentId()).equals(selectedDepartmentName);
 
-            if (matchesQuery && matchesHospital && matchesNeighborhood) {
+            if (matchesQuery && matchesHospital && matchesNeighborhood && matchesDepartment) {
                 filteredDoctors.add(doctor);
             }
         }
@@ -203,6 +256,15 @@ public class SearchByDoctorFragment extends Fragment {
         doctorRecyclerView.setAdapter(new DoctorAdapter(filteredDoctors, allHospitals, NavHostFragment.findNavController(this)));
         doctorRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down));
         doctorRecyclerView.scheduleLayoutAnimation();
+    }
+
+    protected String getDepartmentNameById(String departmentId) {
+        for (Department department : allDepartments) {
+            if (department.getId().equals(departmentId)) {
+                return department.getName();
+            }
+        }
+        return "";
     }
 
     protected String getHospitalNameById(String hospitalId) {

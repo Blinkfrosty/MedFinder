@@ -1,8 +1,10 @@
 package com.blinkfrosty.medfinder.ui.doctorsInDepartment;
 
 import android.os.Bundle;
+import android.view.View;
 import android.view.animation.AnimationUtils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -23,6 +25,13 @@ public class DoctorsInDepartmentFragment extends SearchByDoctorFragment {
         if (getArguments() != null) {
             departmentId = getArguments().getString("departmentId");
         }
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        view.findViewById(R.id.department_filter_container).setVisibility(View.GONE);
     }
 
     @Override
