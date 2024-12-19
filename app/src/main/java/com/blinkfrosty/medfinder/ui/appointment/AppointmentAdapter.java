@@ -3,6 +3,7 @@ package com.blinkfrosty.medfinder.ui.appointment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,11 +28,18 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     private final List<Appointment> appointments;
     private final DoctorDataAccessHelper doctorDataAccessHelper;
     private final DepartmentDataAccessHelper departmentDataAccessHelper;
+    private final OnAppointmentClickListener onAppointmentClickListener;
 
-    public AppointmentAdapter(List<Appointment> appointments, DoctorDataAccessHelper doctorDataAccessHelper, DepartmentDataAccessHelper departmentDataAccessHelper) {
+    public interface OnAppointmentClickListener {
+        void onAppointmentClick(Appointment appointment);
+    }
+
+    public AppointmentAdapter(List<Appointment> appointments, DoctorDataAccessHelper doctorDataAccessHelper,
+                              DepartmentDataAccessHelper departmentDataAccessHelper, OnAppointmentClickListener onAppointmentClickListener) {
         this.appointments = appointments;
         this.doctorDataAccessHelper = doctorDataAccessHelper;
         this.departmentDataAccessHelper = departmentDataAccessHelper;
+        this.onAppointmentClickListener = onAppointmentClickListener;
     }
 
     @NonNull
@@ -44,6 +52,10 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     @Override
     public void onBindViewHolder(@NonNull AppointmentViewHolder holder, int position) {
         Appointment appointment = appointments.get(position);
+        holder.itemView.setOnClickListener(v -> {
+            v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.item_click_animation));
+            onAppointmentClickListener.onAppointmentClick(appointment);
+        });
 
         doctorDataAccessHelper.getDoctorOnce(appointment.getDoctorId(), new DoctorCallback() {
             @Override

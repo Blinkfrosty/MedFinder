@@ -43,6 +43,25 @@ public class AppointmentDataAccessHelper extends DatabaseHelperBase {
                 .addOnFailureListener(e -> Log.e("AppointmentDataAccessHelper", "Failed to store appointment", e));
     }
 
+    public void getAppointmentById(String appointmentId, AppointmentCallback callback) {
+        appointmentsReference.child(appointmentId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Appointment appointment = dataSnapshot.getValue(Appointment.class);
+                if (appointment != null) {
+                    callback.onAppointmentRetrieved(appointment);
+                } else {
+                    callback.onError(new Exception("Appointment not found"));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.onError(databaseError.toException());
+            }
+        });
+    }
+
     public void getAppointmentsForDoctorOnDate(String doctorId, String date, AppointmentCallback callback) {
         appointmentsReference.orderByChild("doctorId").equalTo(doctorId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -76,6 +95,33 @@ public class AppointmentDataAccessHelper extends DatabaseHelperBase {
                     }
                 }
                 callback.onAppointmentsRetrieved(appointments);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.onError(databaseError.toException());
+            }
+        });
+    }
+
+    public void deleteAppointmentById(String appointmentId, AppointmentCallback callback) {
+        appointmentsReference.child(appointmentId).removeValue()
+                .addOnSuccessListener(aVoid -> callback.onAppointmentRetrieved(null))
+                .addOnFailureListener(e -> callback.onError(e));
+    }
+
+    public void checkUserAppointmentWithDoctor(String userId, String doctorId, AppointmentCallback callback) {
+        appointmentsReference.orderByChild("userId").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Appointment appointment = snapshot.getValue(Appointment.class);
+                    if (appointment != null && appointment.getDoctorId().equals(doctorId)) {
+                        callback.onAppointmentRetrieved(appointment);
+                        return;
+                    }
+                }
+                callback.onAppointmentRetrieved(null);
             }
 
             @Override

@@ -152,15 +152,32 @@ public class ScheduleAppointmentFragment extends Fragment {
             SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
             String date = sdfDate.format(new Date(selectedDateMillis));
 
+            boolean isToday = selectedDate.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+                    selectedDate.get(Calendar.DAY_OF_YEAR) == Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
+
             AppointmentDataAccessHelper.getInstance(requireContext()).getAppointmentsForDoctorOnDate(doctor.getId(), date, new AppointmentCallback() {
                 @Override
                 public void onAppointmentsRetrieved(List<Appointment> appointments) {
-                    List<String> timeSlots = generateTimeSlots(daySchedule.getStartTime(), daySchedule.getEndTime(), appointments);
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, timeSlots);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    timeSpinner.setAdapter(adapter);
-                    timeSpinner.setEnabled(true);
-                    errorTextView.setVisibility(View.GONE);
+                    List<String> timeSlots = generateTimeSlots(daySchedule.getStartTime(), daySchedule.getEndTime(), appointments, isToday);
+
+                    if (timeSlots.isEmpty()) {
+                        timeSpinner.setAdapter(null);
+                        timeSpinner.setEnabled(false);
+                        errorTextView.setText(R.string.error_day_unavailable);
+                        errorTextView.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, timeSlots);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        timeSpinner.setAdapter(adapter);
+                        timeSpinner.setEnabled(true);
+                        errorTextView.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onAppointmentRetrieved(Appointment appointment) {
+                    // Not used
                 }
 
                 @Override
@@ -199,7 +216,7 @@ public class ScheduleAppointmentFragment extends Fragment {
         }
     }
 
-    private List<String> generateTimeSlots(String startTime, String endTime, List<Appointment> appointments) {
+    private List<String> generateTimeSlots(String startTime, String endTime, List<Appointment> appointments, boolean isToday) {
         List<String> timeSlots = new ArrayList<>();
         SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm");
         SimpleDateFormat sdf12 = new SimpleDateFormat("hh:mm a");
@@ -210,17 +227,37 @@ public class ScheduleAppointmentFragment extends Fragment {
         }
 
         try {
-            Date start = sdf24.parse(startTime);
-            Date end = sdf24.parse(endTime);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(start);
+            Calendar startCalendar = Calendar.getInstance();
+            Calendar endCalendar = Calendar.getInstance();
 
-            while (calendar.getTime().before(end)) {
-                String slot = sdf24.format(calendar.getTime());
-                if (!bookedSlots.contains(slot)) {
-                    timeSlots.add(sdf12.format(calendar.getTime()));
+            // Set the time components while keeping the date intact
+            Date startDate = sdf24.parse(startTime);
+            Date endDate = sdf24.parse(endTime);
+            startCalendar.set(Calendar.HOUR_OF_DAY, startDate.getHours());
+            startCalendar.set(Calendar.MINUTE, startDate.getMinutes());
+            startCalendar.set(Calendar.SECOND, 0);
+            startCalendar.set(Calendar.MILLISECOND, 0);
+
+            endCalendar.set(Calendar.HOUR_OF_DAY, endDate.getHours());
+            endCalendar.set(Calendar.MINUTE, endDate.getMinutes());
+            endCalendar.set(Calendar.SECOND, 0);
+            endCalendar.set(Calendar.MILLISECOND, 0);
+
+            if (isToday) {
+                Calendar now = Calendar.getInstance();
+                now.add(Calendar.HOUR_OF_DAY, 2);
+                now.set(Calendar.MINUTE, (now.get(Calendar.MINUTE) / 30 + 1) * 30); // Round to the next 30-minute increment
+                if (startCalendar.before(now)) {
+                    startCalendar = now;
                 }
-                calendar.add(Calendar.MINUTE, 30);
+            }
+
+            while (startCalendar.before(endCalendar)) {
+                String slot = sdf24.format(startCalendar.getTime());
+                if (!bookedSlots.contains(slot)) {
+                    timeSlots.add(sdf12.format(startCalendar.getTime()));
+                }
+                startCalendar.add(Calendar.MINUTE, 30);
             }
         } catch (Exception e) {
             Log.e("ScheduleAppointment", "Error generating time slots - " + e.getMessage());

@@ -85,4 +85,9 @@
     <string name="error_loading_department">Invalid Department</string>
     <string name="error_loading_date_time">Invalid date and time</string>
     <string name="menu_upcoming_appointments">Upcoming Appointments</string>
+    <string name="cancel_appointment">Cancel Appointment</string>
+    <string name="date_and_time"><![CDATA[Date & Time]]></string>
+    <string name="reason_for_visit_camel_case">Reason For Visit</string>
+    <string name="appointment_detail_title_placeholder">Doctor Visit</string>
+    <string name="dialog_cancel_appointment_confirmation">Cancel this appointment?</string>
 </resources>

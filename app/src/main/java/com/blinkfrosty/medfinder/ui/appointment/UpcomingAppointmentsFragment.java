@@ -5,11 +5,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,6 +50,8 @@ public class UpcomingAppointmentsFragment extends Fragment {
     }
 
     private void fetchUpcomingAppointments(String userId) {
+        upcomingAppointments.clear();
+
         AppointmentDataAccessHelper.getInstance(requireContext()).getAppointmentsForUser(userId, new AppointmentCallback() {
             @Override
             public void onAppointmentsRetrieved(List<Appointment> appointments) {
@@ -70,8 +74,20 @@ public class UpcomingAppointmentsFragment extends Fragment {
 
                 appointmentAdapter = new AppointmentAdapter(upcomingAppointments,
                         DoctorDataAccessHelper.getInstance(requireContext()),
-                        DepartmentDataAccessHelper.getInstance(requireContext()));
+                        DepartmentDataAccessHelper.getInstance(requireContext()),
+                        appointment -> {
+                            Bundle args = new Bundle();
+                            args.putString("appointmentId", appointment.getId());
+                            Navigation.findNavController(requireView()).navigate(R.id.action_nav_upcoming_appointments_to_nav_upcoming_appointment_details, args);
+                        });
                 upcomingAppointmentsRecyclerView.setAdapter(appointmentAdapter);
+                upcomingAppointmentsRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down));
+                upcomingAppointmentsRecyclerView.scheduleLayoutAnimation();
+            }
+
+            @Override
+            public void onAppointmentRetrieved(Appointment appointment) {
+                // Not used
             }
 
             @Override

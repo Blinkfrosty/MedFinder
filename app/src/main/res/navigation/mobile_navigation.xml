@@ -90,6 +90,23 @@
         android:id="@+id/nav_upcoming_appointments"
         android:name="com.blinkfrosty.medfinder.ui.appointment.UpcomingAppointmentsFragment"
         android:label="@string/menu_upcoming_appointments"
-        tools:layout="@layout/fragment_upcoming_appointments" />
+        tools:layout="@layout/fragment_upcoming_appointments">
+        <action
+            android:id="@+id/action_nav_upcoming_appointments_to_nav_upcoming_appointment_details"
+            app:destination="@id/nav_upcoming_appointment_details"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
+    <fragment
+        android:id="@+id/nav_upcoming_appointment_details"
+        android:name="com.blinkfrosty.medfinder.ui.appointment.UpcomingAppointmentDetailsFragment"
+        android:label="Upcoming Appointment Details"
+        tools:layout="@layout/fragment_upcoming_appointment_details">
+        <argument
+            android:name="appointmentId"
+            app:argType="string" />
+    </fragment>
 </navigation>
