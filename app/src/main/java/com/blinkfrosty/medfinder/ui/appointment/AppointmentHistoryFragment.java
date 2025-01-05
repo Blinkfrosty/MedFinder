@@ -30,61 +30,57 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-public class UpcomingAppointmentsFragment extends Fragment {
+public class AppointmentHistoryFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private AppointmentAdapter appointmentAdapter;
     private ProgressDialogHelper progressDialogHelper;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_upcoming_appointments, container, false);
+        View view = inflater.inflate(R.layout.fragment_appointment_history, container, false);
 
-        recyclerView = view.findViewById(R.id.upcoming_appointments_recycler_view);
+        recyclerView = view.findViewById(R.id.appointment_history_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         progressDialogHelper = new ProgressDialogHelper();
         progressDialogHelper.showProgressDialog(requireContext(), "Loading...");
 
-        fetchUpcomingAppointments();
+        loadPastAppointments();
 
         return view;
     }
 
-    private void fetchUpcomingAppointments() {
+    private void loadPastAppointments() {
         String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-        AppointmentDataAccessHelper.getInstance(requireContext()).getAppointmentsForUser(userId, new AppointmentCallback() {
+        AppointmentDataAccessHelper.getInstance(getContext()).getAppointmentsForUser(userId, new AppointmentCallback() {
+            @Override
+            public void onAppointmentRetrieved(Appointment appointment) {
+                // Not used
+            }
+
             @Override
             public void onAppointmentsRetrieved(List<Appointment> appointments) {
-                List<Appointment> upcomingAppointments = new ArrayList<>();
+                List<Appointment> pastAppointments = new ArrayList<>();
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                 String currentDateTime = sdf.format(new Date());
 
                 for (Appointment appointment : appointments) {
+                    // TODO: Figure out how to add 30 mins to the start time of the appointment.
+                    //       THen replace the start time below with the end time, and use <= for the new comparison
                     String appointmentDateTime = appointment.getDate() + " " + appointment.getAppointmentStartTime();
-                    if (appointmentDateTime.compareTo(currentDateTime) >= 0) {
-                        upcomingAppointments.add(appointment);
+                    if (appointmentDateTime.compareTo(currentDateTime) < 0) {
+                        pastAppointments.add(appointment);
                     }
                 }
 
-                // Sort the appointments by date and time
-                upcomingAppointments.sort((a1, a2) -> {
-                    String dateTime1 = a1.getDate() + " " + a1.getAppointmentStartTime();
-                    String dateTime2 = a2.getDate() + " " + a2.getAppointmentStartTime();
-                    return dateTime1.compareTo(dateTime2);
+                appointmentAdapter = new AppointmentAdapter(pastAppointments, DoctorDataAccessHelper.getInstance(getContext()), DepartmentDataAccessHelper.getInstance(getContext()), appointment -> {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("appointmentId", appointment.getId());
+                    Navigation.findNavController(requireView()).navigate(R.id.action_nav_appointment_history_to_nav_previous_appointment_details, bundle);
                 });
-
-                appointmentAdapter = new AppointmentAdapter(upcomingAppointments,
-                        DoctorDataAccessHelper.getInstance(requireContext()),
-                        DepartmentDataAccessHelper.getInstance(requireContext()),
-                        appointment -> {
-                            Bundle args = new Bundle();
-                            args.putString("appointmentId", appointment.getId());
-                            Navigation.findNavController(requireView()).navigate(R.id.action_nav_upcoming_appointments_to_nav_upcoming_appointment_details, args);
-                        });
 
                 recyclerView.setAdapter(appointmentAdapter);
                 progressDialogHelper.dismissProgressDialog();
@@ -93,14 +89,9 @@ public class UpcomingAppointmentsFragment extends Fragment {
             }
 
             @Override
-            public void onAppointmentRetrieved(Appointment appointment) {
-                // Not used
-            }
-
-            @Override
             public void onError(Exception e) {
                 Toast.makeText(getContext(), "An error occurred while retrieving appointments", Toast.LENGTH_SHORT).show();
-                Log.e("UpcomingAppointmentsFragment", "An error occurred while retrieving appointments", e);
+                Log.e("AppointmentHistoryFragment", "Error loading past appointments", e);
                 progressDialogHelper.dismissProgressDialog();
             }
         });

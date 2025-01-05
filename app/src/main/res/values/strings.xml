@@ -90,4 +90,6 @@
     <string name="reason_for_visit_camel_case">Reason For Visit</string>
     <string name="appointment_detail_title_placeholder">Doctor Visit</string>
     <string name="dialog_cancel_appointment_confirmation">Cancel this appointment?</string>
+    <string name="menu_appointment_history">Appointment History</string>
+    <string name="doctors_remarks">Doctor\'s Remarks</string>
 </resources>

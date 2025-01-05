@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 R.id.nav_search_by_department,
                 R.id.nav_search_by_doctor,
                 R.id.nav_upcoming_appointments,
+                R.id.nav_appointment_history,
                 R.id.nav_logout)
                 .setOpenableLayout(drawer)
                 .build();

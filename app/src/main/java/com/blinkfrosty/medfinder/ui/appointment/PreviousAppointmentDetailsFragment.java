@@ -1,22 +1,17 @@
 package com.blinkfrosty.medfinder.ui.appointment;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import com.blinkfrosty.medfinder.R;
 import com.blinkfrosty.medfinder.dataaccess.AppointmentCallback;
@@ -38,16 +33,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class UpcomingAppointmentDetailsFragment extends Fragment {
+public class PreviousAppointmentDetailsFragment extends Fragment {
 
     private TextView departmentNameTextView;
     private TextView doctorNameTextView;
     private TextView appointmentDateTimeTextView;
     private TextView hospitalInfoTextView;
     private EditText reasonForVisitEditText;
-    private Button callButton;
-    private Button directionsButton;
-    private Button cancelAppointmentButton;
+    private EditText appointmentNotesEditText;
     private ProgressDialogHelper progressDialogHelper;
     private boolean isDoctorLoaded = false;
     private boolean isDepartmentLoaded = false;
@@ -56,16 +49,14 @@ public class UpcomingAppointmentDetailsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_upcoming_appointment_details, container, false);
+        View view = inflater.inflate(R.layout.fragment_previous_appointment_details, container, false);
 
         departmentNameTextView = view.findViewById(R.id.department_name);
         doctorNameTextView = view.findViewById(R.id.doctor_name);
         appointmentDateTimeTextView = view.findViewById(R.id.appointment_date_time);
         hospitalInfoTextView = view.findViewById(R.id.hospital_info);
         reasonForVisitEditText = view.findViewById(R.id.reason_for_visit);
-        callButton = view.findViewById(R.id.call_button);
-        directionsButton = view.findViewById(R.id.directions_button);
-        cancelAppointmentButton = view.findViewById(R.id.cancel_appointment_button);
+        appointmentNotesEditText = view.findViewById(R.id.appointment_notes);
 
         progressDialogHelper = new ProgressDialogHelper();
         progressDialogHelper.showProgressDialog(requireContext(), "Loading...");
@@ -83,6 +74,7 @@ public class UpcomingAppointmentDetailsFragment extends Fragment {
             @Override
             public void onAppointmentRetrieved(Appointment appointment) {
                 reasonForVisitEditText.setText(appointment.getReasonForVisit());
+                appointmentNotesEditText.setText(appointment.getAppointmentNotes());
 
                 // Load doctor details
                 DoctorDataAccessHelper.getInstance(getContext()).getDoctorOnce(appointment.getDoctorId(), new DoctorCallback() {
@@ -91,18 +83,6 @@ public class UpcomingAppointmentDetailsFragment extends Fragment {
                         doctorNameTextView.setText("With " + doctor.getName());
                         isDoctorLoaded = true;
                         checkIfAllDataLoaded();
-
-                        // Set up call button
-                        if (doctor.getPhoneNumber() != null && !doctor.getPhoneNumber().isEmpty()) {
-                            callButton.setEnabled(true);
-                            callButton.setOnClickListener(v -> {
-                                Intent intent = new Intent(Intent.ACTION_DIAL);
-                                intent.setData(Uri.parse("tel:" + doctor.getPhoneNumber()));
-                                startActivity(intent);
-                            });
-                        } else {
-                            callButton.setEnabled(false);
-                        }
                     }
 
                     @Override
@@ -112,7 +92,7 @@ public class UpcomingAppointmentDetailsFragment extends Fragment {
 
                     @Override
                     public void onError(Exception e) {
-                        Log.e("UpcomingAppointmentDetailsFragment", "Error loading doctor details", e);
+                        Log.e("PreviousAppointmentDetailsFragment", "Error loading doctor details", e);
                         isDoctorLoaded = true;
                         checkIfAllDataLoaded();
                     }
@@ -134,7 +114,7 @@ public class UpcomingAppointmentDetailsFragment extends Fragment {
 
                     @Override
                     public void onError(Exception e) {
-                        Log.e("UpcomingAppointmentDetailsFragment", "Error loading department details", e);
+                        Log.e("PreviousAppointmentDetailsFragment", "Error loading department details", e);
                         isDepartmentLoaded = true;
                         checkIfAllDataLoaded();
                     }
@@ -148,17 +128,6 @@ public class UpcomingAppointmentDetailsFragment extends Fragment {
                         hospitalInfoTextView.setText(hospitalInfo);
                         isHospitalLoaded = true;
                         checkIfAllDataLoaded();
-
-                        // Set up directions button
-                        String address = hospital.getName() + ", " + hospital.getStreetAddress() + ", " +
-                                hospital.getNeighborhood() + ", " + hospital.getCity() + " " + hospital.getPostalCode() +
-                                ", " + hospital.getCountry();
-                        directionsButton.setOnClickListener(v -> {
-                            Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(address));
-                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                            mapIntent.setPackage("com.google.android.apps.maps");
-                            startActivity(mapIntent);
-                        });
                     }
 
                     @Override
@@ -168,7 +137,7 @@ public class UpcomingAppointmentDetailsFragment extends Fragment {
 
                     @Override
                     public void onError(Exception e) {
-                        Log.e("UpcomingAppointmentDetailsFragment", "Error loading hospital details", e);
+                        Log.e("PreviousAppointmentDetailsFragment", "Error loading hospital details", e);
                         isHospitalLoaded = true;
                         checkIfAllDataLoaded();
                     }
@@ -185,9 +154,6 @@ public class UpcomingAppointmentDetailsFragment extends Fragment {
                 } catch (Exception e) {
                     appointmentDateTimeTextView.setText(R.string.error_loading_date_time);
                 }
-
-                // Set up cancel appointment button
-                cancelAppointmentButton.setOnClickListener(v -> showDeleteConfirmationDialog(appointmentId));
             }
 
             @Override
@@ -197,7 +163,7 @@ public class UpcomingAppointmentDetailsFragment extends Fragment {
 
             @Override
             public void onError(Exception e) {
-                Log.e("UpcomingAppointmentDetailsFragment", "Error loading appointment details", e);
+                Log.e("PreviousAppointmentDetailsFragment", "Error loading appointment details", e);
                 Toast.makeText(getContext(), "An error occurred while retrieving appointment details", Toast.LENGTH_SHORT).show();
             }
         });
@@ -207,41 +173,5 @@ public class UpcomingAppointmentDetailsFragment extends Fragment {
         if (isDoctorLoaded && isDepartmentLoaded && isHospitalLoaded) {
             progressDialogHelper.dismissProgressDialog();
         }
-    }
-
-    private void showDeleteConfirmationDialog(String appointmentId) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_delete_appointment_confirmation, null);
-        builder.setView(dialogView);
-
-        AlertDialog dialog = builder.create();
-
-        Button yesButton = dialogView.findViewById(R.id.delete_dialog_button_yes);
-        Button noButton = dialogView.findViewById(R.id.delete_dialog_button_no);
-
-        yesButton.setOnClickListener(v -> {
-            AppointmentDataAccessHelper.getInstance(getContext()).deleteAppointmentById(appointmentId, new AppointmentCallback() {
-                @Override
-                public void onAppointmentRetrieved(Appointment appointment) {
-                    dialog.dismiss();
-                    Navigation.findNavController(requireView()).popBackStack();
-                }
-
-                @Override
-                public void onAppointmentsRetrieved(List<Appointment> appointments) {
-                    // Not used
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    Log.e("UpcomingAppointmentDetailsFragment", "Error deleting appointment", e);
-                    dialog.dismiss();
-                }
-            });
-        });
-
-        noButton.setOnClickListener(v -> dialog.dismiss());
-
-        dialog.show();
     }
 }

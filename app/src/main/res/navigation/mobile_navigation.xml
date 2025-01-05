@@ -109,4 +109,28 @@
             android:name="appointmentId"
             app:argType="string" />
     </fragment>
+
+    <fragment
+        android:id="@+id/nav_appointment_history"
+        android:name="com.blinkfrosty.medfinder.ui.appointment.AppointmentHistoryFragment"
+        android:label="@string/menu_appointment_history"
+        tools:layout="@layout/fragment_appointment_history">
+        <action
+            android:id="@+id/action_nav_appointment_history_to_nav_previous_appointment_details"
+            app:destination="@id/nav_previous_appointment_details"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_previous_appointment_details"
+        android:name="com.blinkfrosty.medfinder.ui.appointment.PreviousAppointmentDetailsFragment"
+        android:label="Previous Appointment Details"
+        tools:layout="@layout/fragment_previous_appointment_details">
+        <argument
+            android:name="appointmentId"
+            app:argType="string" />
+    </fragment>
 </navigation>
