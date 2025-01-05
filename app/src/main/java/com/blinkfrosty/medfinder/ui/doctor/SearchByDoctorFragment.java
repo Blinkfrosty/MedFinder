@@ -28,6 +28,7 @@ import com.blinkfrosty.medfinder.dataaccess.HospitalCallback;
 import com.blinkfrosty.medfinder.dataaccess.HospitalDataAccessHelper;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.Doctor;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.Hospital;
+import com.blinkfrosty.medfinder.helpers.ProgressDialogHelper;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,6 +46,7 @@ public class SearchByDoctorFragment extends Fragment {
     protected List<Doctor> allDoctors = new ArrayList<>();
     protected List<Hospital> allHospitals = new ArrayList<>();
     protected List<String> allNeighborhoods = new ArrayList<>();
+    protected ProgressDialogHelper progressDialogHelper;
 
     protected static final String SPINNER_DEFAULT_ITEM = "All";
 
@@ -61,6 +63,9 @@ public class SearchByDoctorFragment extends Fragment {
         searchDoctorEditText = view.findViewById(R.id.doctor_search);
         hospitalSpinner = view.findViewById(R.id.hospital_spinner);
         neighborhoodSpinner = view.findViewById(R.id.neighborhood_spinner);
+
+        progressDialogHelper = new ProgressDialogHelper();
+        progressDialogHelper.showProgressDialog(requireContext(), "Loading...");
 
         searchDoctorEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -164,6 +169,7 @@ public class SearchByDoctorFragment extends Fragment {
             public void onDoctorsRetrieved(List<Doctor> doctors) {
                 allDoctors = doctors;
                 filterDoctors();
+                progressDialogHelper.dismissProgressDialog();
             }
 
             @Override
@@ -175,6 +181,7 @@ public class SearchByDoctorFragment extends Fragment {
             public void onError(Exception e) {
                 Toast.makeText(getContext(), "An error occurred while retrieving doctors", Toast.LENGTH_SHORT).show();
                 Log.e("SearchByDoctorFragment", "An error occurred while retrieving doctors", e);
+                progressDialogHelper.dismissProgressDialog();
             }
         });
     }
