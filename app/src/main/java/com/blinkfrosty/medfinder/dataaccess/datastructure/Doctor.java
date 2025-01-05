@@ -2,8 +2,10 @@ package com.blinkfrosty.medfinder.dataaccess.datastructure;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.io.Serializable;
+
 @IgnoreExtraProperties
-public class Doctor {
+public class Doctor implements Serializable {
 
     private String id;
     private String name;

@@ -21,6 +21,7 @@ import com.blinkfrosty.medfinder.R;
 import com.blinkfrosty.medfinder.dataaccess.DepartmentCallback;
 import com.blinkfrosty.medfinder.dataaccess.DepartmentDataAccessHelper;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.Department;
+import com.blinkfrosty.medfinder.helpers.ProgressDialogHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ public class SearchByDepartmentFragment extends Fragment {
     private RecyclerView departmentRecyclerView;
     private EditText searchDepartmentEditText;
     private List<Department> allDepartments = new ArrayList<>();
+    private ProgressDialogHelper progressDialogHelper;
 
     @Nullable
     @Override
@@ -41,6 +43,9 @@ public class SearchByDepartmentFragment extends Fragment {
         departmentRecyclerView = view.findViewById(R.id.department_list);
         departmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         searchDepartmentEditText = view.findViewById(R.id.department_search);
+
+        progressDialogHelper = new ProgressDialogHelper();
+        progressDialogHelper.showProgressDialog(requireContext(), "Loading...");
 
         searchDepartmentEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -76,6 +81,7 @@ public class SearchByDepartmentFragment extends Fragment {
             public void onDepartmentsRetrieved(List<Department> departments) {
                 allDepartments = departments;
                 filterDepartments(searchDepartmentEditText.getText().toString());
+                progressDialogHelper.dismissProgressDialog();
             }
 
             @Override
@@ -87,6 +93,7 @@ public class SearchByDepartmentFragment extends Fragment {
             public void onError(Exception e) {
                 Toast.makeText(getContext(), "An error occurred while retrieving departments", Toast.LENGTH_SHORT).show();
                 Log.e("SearchByDepartmentFragment", "An error occurred while retrieving departments", e);
+                progressDialogHelper.dismissProgressDialog();
             }
         });
     }
