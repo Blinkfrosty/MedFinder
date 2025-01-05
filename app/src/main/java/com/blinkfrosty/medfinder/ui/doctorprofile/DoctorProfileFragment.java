@@ -36,8 +36,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class DoctorProfileFragment extends Fragment {
 
@@ -278,15 +280,32 @@ public class DoctorProfileFragment extends Fragment {
                 @Override
                 public void onAppointmentRetrieved(Appointment appointment) {
                     if (appointment != null) {
-                        new AlertDialog.Builder(requireContext())
-                                .setMessage("You cannot schedule another appointment with this doctor." +
-                                        "\nPlease cancel your upcoming appointment if you want to reschedule.")
-                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                                .show();
+                        try {
+                            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+                            Date appointmentDateTime = dateTimeFormat.parse(appointment.getDate() + " " + appointment.getAppointmentStartTime());
+
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(appointmentDateTime);
+                            calendar.add(Calendar.MINUTE, 30);
+                            Date appointmentEndTime = calendar.getTime();
+
+                            Date currentDateTime = new Date();
+
+                            if (appointmentEndTime.after(currentDateTime)) {
+                                new AlertDialog.Builder(requireContext())
+                                        .setMessage("You cannot schedule another appointment with this doctor." +
+                                                "\nPlease cancel your upcoming appointment if you want to reschedule.")
+                                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                        .show();
+                            } else {
+                                scheduleNewAppointment(doctor);
+                            }
+                        } catch (Exception e) {
+                            Log.e("DoctorProfileFragment", "Error parsing appointment date/time", e);
+                            scheduleNewAppointment(doctor);
+                        }
                     } else {
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("doctor", doctor);
-                        Navigation.findNavController(requireView()).navigate(R.id.action_nav_doctor_profile_to_nav_schedule_appointment, bundle);
+                        scheduleNewAppointment(doctor);
                     }
                 }
 
@@ -301,5 +320,11 @@ public class DoctorProfileFragment extends Fragment {
                 }
             });
         }
+    }
+
+    private void scheduleNewAppointment(Doctor doctor) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("doctor", doctor);
+        Navigation.findNavController(requireView()).navigate(R.id.action_nav_doctor_profile_to_nav_schedule_appointment, bundle);
     }
 }
