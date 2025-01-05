@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/department_icon"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
             android:src="@drawable/ic_menu_department"
             app:theme="@style/AppIcon"
             app:layout_constraintTop_toTopOf="parent"
@@ -55,16 +55,26 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/button_explore_departments" />
 
+        <View
+            android:id="@+id/separator"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="38dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/explore_departments_description" />
+
         <ImageView
             android:id="@+id/doctor_icon"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_marginTop="60dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="30dp"
             android:src="@drawable/ic_menu_doctor"
             app:theme="@style/AppIcon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/explore_departments_description" />
+            app:layout_constraintTop_toBottomOf="@id/separator" />
 
         <Button
             android:id="@+id/button_search_for_doctors"

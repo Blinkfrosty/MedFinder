@@ -11,10 +11,18 @@
         tools:layout="@layout/fragment_find_doctor">
         <action
             android:id="@+id/action_find_doctor_to_search_by_department"
-            app:destination="@id/nav_search_by_department" />
+            app:destination="@id/nav_search_by_department"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_find_doctor_to_search_by_doctor"
-            app:destination="@id/nav_search_by_doctor" />
+            app:destination="@id/nav_search_by_doctor"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
