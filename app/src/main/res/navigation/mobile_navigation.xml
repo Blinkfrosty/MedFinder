@@ -1,9 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_search_by_department">
+    app:startDestination="@+id/nav_find_doctor">
+
+    <fragment
+        android:id="@+id/nav_find_doctor"
+        android:name="com.blinkfrosty.medfinder.ui.finddoctor.FindDoctorFragment"
+        android:label="@string/menu_find_doctor"
+        tools:layout="@layout/fragment_find_doctor">
+        <action
+            android:id="@+id/action_find_doctor_to_search_by_department"
+            app:destination="@id/nav_search_by_department" />
+        <action
+            android:id="@+id/action_find_doctor_to_search_by_doctor"
+            app:destination="@id/nav_search_by_doctor" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_search_by_department"
@@ -68,5 +80,4 @@
             android:name="doctorId"
             app:argType="string" />
     </fragment>
-
 </navigation>

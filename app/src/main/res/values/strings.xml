@@ -76,4 +76,9 @@
     <string name="saturday">Saturday</string>
     <string name="sunday">Sunday</string>
     <string name="closed">Closed</string>
+    <string name="menu_find_doctor">Find A Doctor</string>
+    <string name="explore_departments">Explore Departments</string>
+    <string name="search_for_doctor">Search For Doctors</string>
+    <string name="explore_departments_description">Explore various medical departments and find the right specialist</string>
+    <string name="search_for_doctor_description">Find the right doctor using a variety of search criteria</string>
 </resources>
