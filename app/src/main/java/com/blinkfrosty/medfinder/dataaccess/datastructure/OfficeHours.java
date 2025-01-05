@@ -2,8 +2,10 @@ package com.blinkfrosty.medfinder.dataaccess.datastructure;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.io.Serializable;
+
 @IgnoreExtraProperties
-public class OfficeHours {
+public class OfficeHours implements Serializable {
     private DaySchedule monday;
     private DaySchedule tuesday;
     private DaySchedule wednesday;

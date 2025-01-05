@@ -13,20 +13,27 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.blinkfrosty.medfinder.R;
+import com.blinkfrosty.medfinder.dataaccess.AppointmentCallback;
+import com.blinkfrosty.medfinder.dataaccess.AppointmentDataAccessHelper;
 import com.blinkfrosty.medfinder.dataaccess.DepartmentCallback;
 import com.blinkfrosty.medfinder.dataaccess.DepartmentDataAccessHelper;
 import com.blinkfrosty.medfinder.dataaccess.DoctorCallback;
 import com.blinkfrosty.medfinder.dataaccess.DoctorDataAccessHelper;
 import com.blinkfrosty.medfinder.dataaccess.HospitalCallback;
 import com.blinkfrosty.medfinder.dataaccess.HospitalDataAccessHelper;
+import com.blinkfrosty.medfinder.dataaccess.datastructure.Appointment;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.Department;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.Doctor;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.Hospital;
 import com.blinkfrosty.medfinder.dataaccess.datastructure.OfficeHours;
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -50,6 +57,7 @@ public class DoctorProfileFragment extends Fragment {
     private Button callButton;
     private Button visitWebsiteButton;
     private Button directionsButton;
+    private Button scheduleAppointmentButton;
 
     @Nullable
     @Override
@@ -72,6 +80,7 @@ public class DoctorProfileFragment extends Fragment {
         callButton = view.findViewById(R.id.call_button);
         visitWebsiteButton = view.findViewById(R.id.visit_website_button);
         directionsButton = view.findViewById(R.id.directions_button);
+        scheduleAppointmentButton = view.findViewById(R.id.schedule_appointment_button);
 
         if (getArguments() != null) {
             String doctorId = getArguments().getString("doctorId");
@@ -199,6 +208,10 @@ public class DoctorProfileFragment extends Fragment {
                             mapIntent.setPackage("com.google.android.apps.maps");
                             startActivity(mapIntent);
                         });
+
+                        // Set up the schedule appointment button
+                        scheduleAppointmentButton.setOnClickListener(v -> checkAndScheduleAppointment(doctor));
+
                     }
 
                     @Override
@@ -254,6 +267,39 @@ public class DoctorProfileFragment extends Fragment {
         } catch (Exception e) {
             Log.e("DoctorProfileFragment", "An error occurred while parsing office hours", e);
             return startTime + " - " + endTime;
+        }
+    }
+
+    private void checkAndScheduleAppointment(Doctor doctor) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            AppointmentDataAccessHelper.getInstance(getContext()).checkUserAppointmentWithDoctor(userId, doctor.getId(), new AppointmentCallback() {
+                @Override
+                public void onAppointmentRetrieved(Appointment appointment) {
+                    if (appointment != null) {
+                        new AlertDialog.Builder(requireContext())
+                                .setMessage("You cannot schedule another appointment with this doctor." +
+                                        "\nPlease cancel your upcoming appointment if you want to reschedule.")
+                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                .show();
+                    } else {
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("doctor", doctor);
+                        Navigation.findNavController(requireView()).navigate(R.id.action_nav_doctor_profile_to_nav_schedule_appointment, bundle);
+                    }
+                }
+
+                @Override
+                public void onAppointmentsRetrieved(List<Appointment> appointments) {
+                    // Not used
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("DoctorProfileFragment", "Error checking user appointment", e);
+                }
+            });
         }
     }
 }
