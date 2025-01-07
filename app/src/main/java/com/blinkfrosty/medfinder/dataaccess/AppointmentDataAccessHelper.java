@@ -110,18 +110,18 @@ public class AppointmentDataAccessHelper extends DatabaseHelperBase {
                 .addOnFailureListener(e -> callback.onError(e));
     }
 
-    public void checkUserAppointmentWithDoctor(String userId, String doctorId, AppointmentCallback callback) {
+    public void checkUserAppointmentsWithDoctor(String userId, String doctorId, AppointmentCallback callback) {
         appointmentsReference.orderByChild("userId").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Appointment> appointments = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Appointment appointment = snapshot.getValue(Appointment.class);
                     if (appointment != null && appointment.getDoctorId().equals(doctorId)) {
-                        callback.onAppointmentRetrieved(appointment);
-                        return;
+                        appointments.add(appointment);
                     }
                 }
-                callback.onAppointmentRetrieved(null);
+                callback.onAppointmentsRetrieved(appointments);
             }
 
             @Override

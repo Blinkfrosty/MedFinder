@@ -276,10 +276,13 @@ public class DoctorProfileFragment extends Fragment {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             String userId = currentUser.getUid();
-            AppointmentDataAccessHelper.getInstance(getContext()).checkUserAppointmentWithDoctor(userId, doctor.getId(), new AppointmentCallback() {
+            AppointmentDataAccessHelper.getInstance(getContext()).checkUserAppointmentsWithDoctor(userId, doctor.getId(), new AppointmentCallback() {
                 @Override
-                public void onAppointmentRetrieved(Appointment appointment) {
-                    if (appointment != null) {
+                public void onAppointmentsRetrieved(List<Appointment> appointments) {
+                    boolean hasUpcomingAppointment = false;
+                    Date currentDateTime = new Date();
+
+                    for (Appointment appointment : appointments) {
                         try {
                             SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
                             Date appointmentDateTime = dateTimeFormat.parse(appointment.getDate() + " " + appointment.getAppointmentStartTime());
@@ -289,34 +292,34 @@ public class DoctorProfileFragment extends Fragment {
                             calendar.add(Calendar.MINUTE, 30);
                             Date appointmentEndTime = calendar.getTime();
 
-                            Date currentDateTime = new Date();
-
                             if (appointmentEndTime.after(currentDateTime)) {
-                                new AlertDialog.Builder(requireContext())
-                                        .setMessage("You cannot schedule another appointment with this doctor." +
-                                                "\nPlease cancel your upcoming appointment if you want to reschedule.")
-                                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                                        .show();
-                            } else {
-                                scheduleNewAppointment(doctor);
+                                hasUpcomingAppointment = true;
+                                break;
                             }
                         } catch (Exception e) {
                             Log.e("DoctorProfileFragment", "Error parsing appointment date/time", e);
-                            scheduleNewAppointment(doctor);
                         }
+                    }
+
+                    if (hasUpcomingAppointment) {
+                        new AlertDialog.Builder(requireContext())
+                                .setMessage("You cannot schedule another appointment with this doctor." +
+                                        "\nPlease cancel your upcoming appointment if you want to reschedule.")
+                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                .show();
                     } else {
                         scheduleNewAppointment(doctor);
                     }
                 }
 
                 @Override
-                public void onAppointmentsRetrieved(List<Appointment> appointments) {
+                public void onAppointmentRetrieved(Appointment appointment) {
                     // Not used
                 }
 
                 @Override
                 public void onError(Exception e) {
-                    Log.e("DoctorProfileFragment", "Error checking user appointment", e);
+                    Log.e("DoctorProfileFragment", "Error checking user appointments", e);
                 }
             });
         }
